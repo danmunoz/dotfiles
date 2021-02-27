@@ -1,0 +1,65 @@
+cask_args appdir: "/Applications"
+
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+
+brew "mas"
+
+mas "1Password", id: 1333542190
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Keynote", id: 409183694
+
+mas "Ulysses", id: 1225570693
+mas "Pixelmator Pro", id: 1289583905
+mas "Magnet", id: 441258766
+mas "The Unarchiver", id: 425424353
+mas "GarageBand", id: 682658836
+mas "Mactracker", id: 430255202
+mas "Whatsapp", id: 1147396723
+
+# Work specific
+mas "Xcode", id: 497799835
+mas "Developer", id: 640199958
+mas "Slack", id: 803453959
+mas "Spark", id: 1176895641
+
+brew "carthage"
+brew "fastlane", link: false
+brew "git-lfs"
+brew "sourcery"
+brew "swiftlint"
+brew "node"
+
+cask "iterm2"
+cask "visual-studio-code"
+cask "alfred"
+cask "expressvpn"
+cask "grandperspective"
+cask "vlc"
+cask "istat-menus"
+cask "skype"
+cask "tower"
+cask "dash"
+cask "postman"
+cask "sequel-pro"
+cask "google-chrome"
+
+# - Optional
+# cask "obs"
+
+# - Gadgets
+# tap "homebrew/cask-drivers"
+# cask "elgato-stream-deck"
+# cask "logitech-options"
+# cask "logitech-g-hub"
+# cask "philips-hue-sync"
+
+# - Raspberry Pi
+# cask "raspberry-pi-imager"
+
+# Pico
+# brew "cmake"
+# tap "ArmMbed/homebrew-formulae"
+# brew "arm-none-eabi-gcc"
