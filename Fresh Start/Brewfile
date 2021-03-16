@@ -19,7 +19,7 @@ mas "GarageBand", id: 682658836
 mas "Mactracker", id: 430255202
 mas "Whatsapp", id: 1147396723
 
-# Work specific
+# Development
 mas "Xcode", id: 497799835
 mas "Developer", id: 640199958
 mas "Slack", id: 803453959
@@ -32,22 +32,30 @@ brew "sourcery"
 brew "swiftlint"
 brew "node"
 
-cask "iterm2"
 cask "visual-studio-code"
+cask "tower"
+cask "dash"
+cask "postman"
+cask "sequel-pro"
+cask "mysqlworkbench"
+cask "proxyman"
+
+# Quality of Life
+cask "iterm2"
 cask "alfred"
 cask "expressvpn"
 cask "grandperspective"
 cask "vlc"
 cask "istat-menus"
 cask "skype"
-cask "tower"
-cask "dash"
-cask "postman"
-cask "sequel-pro"
 cask "google-chrome"
+cask "forecast"
+cask "zoom"
+cask "pritunl"
 
 # - Optional
 # cask "obs"
+# brew "docker"
 
 # - Gadgets
 # tap "homebrew/cask-drivers"
@@ -55,6 +63,7 @@ cask "google-chrome"
 # cask "logitech-options"
 # cask "logitech-g-hub"
 # cask "philips-hue-sync"
+# cask "ultimaker-cura"
 
 # - Raspberry Pi
 # cask "raspberry-pi-imager"
