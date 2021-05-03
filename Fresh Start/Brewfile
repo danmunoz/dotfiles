@@ -20,7 +20,7 @@ mas "Mactracker", id: 430255202
 mas "Whatsapp", id: 1147396723
 
 # Development
-mas "Xcode", id: 497799835
+# mas "Xcode", id: 497799835
 mas "Developer", id: 640199958
 mas "Slack", id: 803453959
 mas "Spark", id: 1176895641
@@ -52,21 +52,28 @@ cask "google-chrome"
 cask "forecast"
 cask "zoom"
 cask "pritunl"
+cask "teamviewer"
+cask "discord"
+cask "keycastr"
+cask "transmission"
+cask "karabiner-elements"
+cask "forecast"
+cask "xcodes"
 
 # - Optional
-# cask "obs"
+cask "obs"
 # brew "docker"
 
 # - Gadgets
-# tap "homebrew/cask-drivers"
-# cask "elgato-stream-deck"
+tap "homebrew/cask-drivers"
+cask "elgato-stream-deck"
 # cask "logitech-options"
-# cask "logitech-g-hub"
-# cask "philips-hue-sync"
-# cask "ultimaker-cura"
+cask "logitech-g-hub"
+cask "philips-hue-sync"
+cask "ultimaker-cura"
 
 # - Raspberry Pi
-# cask "raspberry-pi-imager"
+cask "raspberry-pi-imager"
 
 # Pico
 # brew "cmake"
