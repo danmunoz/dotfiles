@@ -1,0 +1,5 @@
+[user]
+	name = Daniel Munoz
+	email = ddu@issuu.com
+[mergetool]
+	keepBackup = true

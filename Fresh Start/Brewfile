@@ -3,6 +3,8 @@ cask_args appdir: "/Applications"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
+tap "homebrew/cask-fonts"
+tap "homebrew/cask-drivers"
 
 brew "mas"
 
@@ -18,12 +20,12 @@ mas "The Unarchiver", id: 425424353
 mas "GarageBand", id: 682658836
 mas "Mactracker", id: 430255202
 mas "Whatsapp", id: 1147396723
+mas "Slack", id: 803453959
+mas "Spark", id: 1176895641
 
 # Development
 mas "Xcode", id: 497799835
 mas "Developer", id: 640199958
-mas "Slack", id: 803453959
-mas "Spark", id: 1176895641
 
 brew "carthage"
 brew "fastlane", link: false
@@ -31,6 +33,8 @@ brew "git-lfs"
 brew "sourcery"
 brew "swiftlint"
 brew "node"
+brew "mysql"
+brew 'ffmpeg'
 
 cask "visual-studio-code"
 cask "tower"
@@ -39,34 +43,32 @@ cask "postman"
 cask "sequel-pro"
 cask "mysqlworkbench"
 cask "proxyman"
+cask "font-jetbrains-mono"
 
-# Quality of Life
+# Utilities
 cask "iterm2"
 cask "alfred"
 cask "expressvpn"
 cask "grandperspective"
 cask "vlc"
 cask "istat-menus"
+cask "forecast"
+
+# Communications
 cask "skype"
 cask "google-chrome"
-cask "forecast"
 cask "zoom"
 cask "pritunl"
 
-# - Optional
-# cask "obs"
-# brew "docker"
-
 # - Gadgets
-# tap "homebrew/cask-drivers"
-# cask "elgato-stream-deck"
-# cask "logitech-options"
-# cask "logitech-g-hub"
-# cask "philips-hue-sync"
-# cask "ultimaker-cura"
+cask "obs"
+cask "elgato-stream-deck"
+cask "logitech-g-hub"
+cask "philips-hue-sync"
 
-# - Raspberry Pi
-# cask "raspberry-pi-imager"
+# - Other
+cask "raspberry-pi-imager"
+cask "ultimaker-cura"
 
 # Pico
 # brew "cmake"
