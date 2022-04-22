@@ -53,12 +53,17 @@ cask "grandperspective"
 cask "vlc"
 cask "istat-menus"
 cask "forecast"
+cask "keycastr"
+cask "transmission"
+cask "karabiner-elements"
+cask "xcodes"
+cask "teamviewer"
 
 # Communications
 cask "skype"
 cask "google-chrome"
 cask "zoom"
-cask "pritunl"
+cask "discord"
 
 # - Gadgets
 cask "obs"
