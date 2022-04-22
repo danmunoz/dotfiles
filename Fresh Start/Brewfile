@@ -22,10 +22,14 @@ mas "Mactracker", id: 430255202
 mas "Whatsapp", id: 1147396723
 mas "Slack", id: 803453959
 mas "Spark", id: 1176895641
+mas "TinyStopwatch", id: 1447754003
+mas "DaVinci Resolve", id: 571213070
 
 # Development
 mas "Xcode", id: 497799835
 mas "Developer", id: 640199958
+mas "RocketSim", id: 1504940162
+mas "Sequel Ace", id: 1518036000
 
 brew "carthage"
 brew "fastlane", link: false
@@ -40,7 +44,6 @@ cask "visual-studio-code"
 cask "tower"
 cask "dash"
 cask "postman"
-cask "sequel-pro"
 cask "mysqlworkbench"
 cask "proxyman"
 cask "font-jetbrains-mono"
