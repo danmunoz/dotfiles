@@ -4,60 +4,73 @@ dirname="$(dirname "$0")"
 
 function copyDotfilesDir() {
   echo "*** Copying Dotfiles to home"
-	# rsync --exclude ".git/" \
-	# 	--exclude ".DS_Store" \
-	# 	-avh --no-perms dotfiles/ ~/.dotfiles;
+	 rsync --exclude ".git/" \
+	 	--exclude ".DS_Store" \
+	 	-avh --no-perms dotfiles/ ~/.dotfiles;
 }
 
 function setupSimLinks() {
   echo "*** Setting up SymLinks"
-  # ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc || echo ".zshrc exists"
-  # ln -s $HOME/.dotfiles/gitconfig $HOME/.gitconfig || echo ".gitconfig exists"
+  
+  read -p "Do you want to replace existing zshrc and gitconfig files? (y/n) " -n 1
+  echo ""
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    ln -sfn $HOME/.dotfiles/zshrc $HOME/.zshrc
+    ln -sfn $HOME/.dotfiles/gitconfig $HOME/.gitconfig
+  else
+    ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc || echo ".zshrc exists"
+    ln -s $HOME/.dotfiles/gitconfig $HOME/.gitconfig || echo ".gitconfig exists"
+  fi
 }
 
 # Check for Homebrew and install if we don't have it
 function setupHomebrew() {
   if ! command -v brew >/dev/null; then
-    echo "*** Installing Xcode Command Line Tools..."
-    # xcode-select --install
     echo "*** Installing Homebrew..."
-    # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   else
     echo "*** Homebrew already installed."
     echo "*** Updating brew"
-    # brew update
+    brew update
   fi
+}
+
+# Install Xcode
+function installXcode() {
+  brew install mas
+  echo "*** Installing Xcode from App Store"
+  mas install 497799835
+  echo "*** Enter password to accept xcodebuild license"
+  sudo xcodebuild -license accept 
 }
 
 # Install Xcode themes
 function installXcodeThemes() {
-  # source XcodeThemes/install.sh
+  ./XcodeThemes/install.sh
 }
 
 function start() {
+  setupHomebrew;
+  installXcode;
+
+  echo "*** Install Homebrew dependencies"
+  brew bundle
+
   copyDotfilesDir;
   setupSimLinks;
-  setupHomebrew;
-  
-  ## oh-my-zsh
-  echo "*** Installing Oh-my-zsh"
-  # sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-  # echo "*** Please make sure to sign into the Mac App Store manually first."
-  echo "*** Install Homebrew dependencies"
-  # brew bundle
 
   installXcodeThemes;
 
-  # source Scripts/macos-prefs
+  ./Scripts/macos-prefs
 
-  echo "Finished."
+  # oh-my-zsh
+  echo "*** Installing Oh-my-zsh"
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+  echo "*** Finished."
 }
 
 echo "*** Setting up your Computer..."
-
-echo "*** Pullling latest version of the repo"
-# git pull origin main
 
 # Initial prompt
 if [ "$1" == "--force" -o "$1" == "-f" ]; then

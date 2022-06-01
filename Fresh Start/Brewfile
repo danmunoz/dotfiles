@@ -26,7 +26,7 @@ mas "TinyStopwatch", id: 1447754003
 mas "DaVinci Resolve", id: 571213070
 
 # Development
-mas "Xcode", id: 497799835
+#mas "Xcode", id: 497799835
 mas "Developer", id: 640199958
 mas "RocketSim", id: 1504940162
 mas "Sequel Ace", id: 1518036000
@@ -38,7 +38,9 @@ brew "sourcery"
 brew "swiftlint"
 brew "node"
 brew "mysql"
-brew 'ffmpeg'
+brew "ffmpeg"
+brew "cocoapods"
+brew "swiftformat"
 
 cask "visual-studio-code"
 cask "tower"
