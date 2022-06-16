@@ -28,7 +28,7 @@ function installHomebrewDependencies() {
 }
 
 function copyDotfilesDir() {
-  # setupGitConfig;
+  setupGitConfig;
   printMessage "*** Copying .dotfiles dir"
 	 rsync --exclude ".git/" \
 	 	--exclude ".DS_Store" \
