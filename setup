@@ -28,6 +28,7 @@ function installHomebrewDependencies() {
 }
 
 function copyDotfilesDir() {
+  # setupGitConfig;
   printMessage "*** Copying .dotfiles dir"
 	 rsync --exclude ".git/" \
 	 	--exclude ".DS_Store" \
@@ -64,7 +65,18 @@ function restoreDock() {
 
 function installOhMyZsh() {
   printMessage "*** Installing Oh-my-zsh"
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+}
+
+function setupGitConfig() {
+  printMessage "*** Creating basic .gitconfig file"
+  read -p 'Name: ' namevar
+  read -p 'Email: ' emailvar
+  echo "[user]
+	name = $namevar
+	email = $emailvar
+[mergetool]
+	keepBackup = true" > Scripts/dotfiles/gitconfig
 }
 
 function start() {
@@ -78,12 +90,12 @@ function start() {
   setupHomebrew;
   installXcode;
   installHomebrewDependencies;
+  installOhMyZsh;
   copyDotfilesDir;
   setupSimLinks;
   installXcodeThemes;
   setupPrefs;
   restoreDock;
-  # installOhMyZsh;
   printMessage "*** Finished."
 }
 
