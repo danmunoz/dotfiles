@@ -1,17 +1,28 @@
-# App setup on fresh macOS installation using Homebrew Bundle
+# macOS initial configuration (Daniel's dotfiles)
 
-## How to use
+Dotfiles and Initial macOS configuration, including:
+- Dotfiles (.zshrc & .gitconfig)
+- macOS apps installation using Homebrew's Bundle
+- macOS configuration
+- Xcode themes installation
 
-Install Homebrew:
+## Installation
 
-`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+**Warning:** Before using the content of this repo, you should download, review and modify the content to suit your needs. Use at your own risk!
 
-Download `Brewfile`, move to it's directory and run:
+You can clone the repository and run the `setup` script with the following command:
 
-`brew bundle`
+```bash
+git clone https://github.com/danmunoz/dotfiles && cd dotfiles && source setup
+```
 
-Detailed instructions on:
+If you are on a fresh macOS installation, you won't be able to use git, so we can proceed manually:
 
-[Medium](https://danmunozd.medium.com/setting-up-a-fresh-macos-installation-with-homebrew-32af4cb624d4)
+Run this command to download and unzip the repo in your current directory:
 
-[danmunoz.com](https://danmunoz.com/setting-up-a-new-computer-with-homebrew/)
+```bash
+curl https://github.com/danmunoz/dotfiles/archive/refs/heads/main.zip -L -o dotfiles.zip && unzip dotfiles.zip && rm -f dotfiles.zip \
+&& cd dotfiles && source setup
+```
+
+Again, I strongly encourage you to avoid running this script directly and to customize it to suit your needs.
