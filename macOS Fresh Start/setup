@@ -29,8 +29,7 @@ function setupHomebrew() {
     echo "*** Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   else
-    echo "*** Homebrew already installed."
-    echo "*** Updating brew"
+    echo "*** Homebrew already installed, updating"
     brew update
   fi
 }
@@ -46,27 +45,36 @@ function installXcode() {
 
 # Install Xcode themes
 function installXcodeThemes() {
+  echo "*** Installing macOS Prefs"
   ./XcodeThemes/install.sh
 }
 
-function start() {
-  setupHomebrew;
-  installXcode;
+# Install Prefs
+function setupPrefs() {
+  ./Prefs/macos-prefs
+  cp Prefs/com.apple.dock.plist ~/Library/Preferences/
+  killall "Dock"
+}
 
+# Install Homebrew dependencies
+func installHomebrewDependencies() {
   echo "*** Install Homebrew dependencies"
   brew bundle
+}
 
-  copyDotfilesDir;
-  setupSimLinks;
-
-  installXcodeThemes;
-
-  ./Scripts/macos-prefs
-
-  # oh-my-zsh
+func installOhMyZsh() {
   echo "*** Installing Oh-my-zsh"
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+}
 
+func start() {
+  setupHomebrew;
+  installXcode;
+  installHomebrewDependencies;
+  copyDotfilesDir;
+  setupSimLinks;
+  installXcodeThemes;
+  setupPrefs;
   echo "*** Finished."
 }
 
