@@ -1,2 +1,2 @@
 .DS_Store
-/Fresh Start/Brewfile.lock.json
+*.lock.json
