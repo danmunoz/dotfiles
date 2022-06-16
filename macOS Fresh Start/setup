@@ -1,27 +1,6 @@
 #! /usr/bin/env bash
 
-dirname="$(dirname "$0")"
-
-function copyDotfilesDir() {
-  echo "*** Copying Dotfiles to home"
-	 rsync --exclude ".git/" \
-	 	--exclude ".DS_Store" \
-	 	-avh --no-perms dotfiles/ ~/.dotfiles;
-}
-
-function setupSimLinks() {
-  echo "*** Setting up SymLinks"
-  
-  read -p "Do you want to replace existing zshrc and gitconfig files? (y/n) " -n 1
-  echo ""
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    ln -sfn $HOME/.dotfiles/zshrc $HOME/.zshrc
-    ln -sfn $HOME/.dotfiles/gitconfig $HOME/.gitconfig
-  else
-    ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc || echo ".zshrc exists"
-    ln -s $HOME/.dotfiles/gitconfig $HOME/.gitconfig || echo ".gitconfig exists"
-  fi
-}
+# dirname="$(dirname "$0")"
 
 # Check for Homebrew and install if we don't have it
 function setupHomebrew() {
@@ -36,45 +15,70 @@ function setupHomebrew() {
 
 # Install Xcode
 function installXcode() {
+  echo "*** Installing mas-cli"
   brew install mas
-  echo "*** Installing Xcode from App Store"
+  echo "*** Installing Xcode from Mac App Store"
   mas install 497799835
-  echo "*** Enter password to accept xcodebuild license"
+  echo "*** Enter password to accept xcodebuild license:"
   sudo xcodebuild -license accept 
 }
 
-# Install Xcode themes
-function installXcodeThemes() {
-  echo "*** Installing macOS Prefs"
-  ./XcodeThemes/install.sh
-}
-
-# Install Prefs
-function setupPrefs() {
-  ./Prefs/macos-prefs
-  cp Prefs/com.apple.dock.plist ~/Library/Preferences/
-  killall "Dock"
-}
-
 # Install Homebrew dependencies
-func installHomebrewDependencies() {
+function installHomebrewDependencies() {
   echo "*** Install Homebrew dependencies"
   brew bundle
 }
 
-func installOhMyZsh() {
+function copyDotfilesDir() {
+  echo "*** Copying .dotfiles dir"
+	 rsync --exclude ".git/" \
+	 	--exclude ".DS_Store" \
+	 	-avh --no-perms dotfiles/ ~/.dotfiles;
+}
+
+function setupSimLinks() {
+  echo "*** Setting up SymLinks"
+  
+  read -p "This operation will replace existing zshrc and gitconfig files. Do you wish to continue? (y/n) " -n 1
+  echo ""
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    ln -sfn $HOME/.dotfiles/zshrc $HOME/.zshrc
+    ln -sfn $HOME/.dotfiles/gitconfig $HOME/.gitconfig
+  fi
+}
+
+# Install Xcode themes
+function installXcodeThemes() {
+  ./XcodeThemes/install-xcode-themes
+}
+
+# Setup macOS Preferences
+function setupPrefs() {
+  ./Prefs/setup-macos-prefs
+}
+
+# Restore Dock Elements
+function restoreDock() {
+  echo "*** Restoring the Dock elements"
+  cp Prefs/com.apple.dock.plist ~/Library/Preferences/
+  killall "Dock"
+}
+
+function installOhMyZsh() {
   echo "*** Installing Oh-my-zsh"
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 }
 
-func start() {
+function start() {
   setupHomebrew;
   installXcode;
   installHomebrewDependencies;
   copyDotfilesDir;
   setupSimLinks;
   installXcodeThemes;
-  setupPrefs;
+  # setupPrefs;
+  # restoreDock;
+  # installOhMyZsh;
   echo "*** Finished."
 }
 
@@ -90,4 +94,3 @@ else
 		start;
 	fi
 fi
-
