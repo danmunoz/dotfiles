@@ -13,7 +13,7 @@ Dotfiles and Initial macOS configuration, including:
 You can clone the repository and run the `setup` script with the following command:
 
 ```bash
-git clone https://github.com/danmunoz/dotfiles && cd dotfiles && source setup
+git clone https://github.com/danmunoz/dotfiles && cd dotfiles-main && ./setup
 ```
 
 If you are on a fresh macOS installation, you won't be able to use git, so we can proceed manually:
@@ -22,7 +22,7 @@ Run this command to download and unzip the repo in your current directory:
 
 ```bash
 curl https://github.com/danmunoz/dotfiles/archive/refs/heads/main.zip -L -o dotfiles.zip && unzip dotfiles.zip && rm -f dotfiles.zip \
-&& cd dotfiles && source setup
+&& cd dotfiles-main && ./setup
 ```
 
 Again, I strongly encourage you to avoid running this script directly and to customize it to suit your needs.
