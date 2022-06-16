@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source ./Utilities/print-color
+source ./Scripts/Utilities/print-color
 
 printMessage "*** Installing Xcode Themes"
 DESTDIR=~/Library/Developer/Xcode/UserData/FontAndColorThemes/

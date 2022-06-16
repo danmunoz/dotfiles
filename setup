@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-source ./Utilities/print-color
+source ./Scripts/Utilities/print-color
 
 # Check for Homebrew and install if we don't have it
 function setupHomebrew() {
@@ -23,7 +23,7 @@ function installXcode() {
 
 # Install Homebrew dependencies
 function installHomebrewDependencies() {
-  printMessage "*** Install Homebrew dependencies"
+  printMessage "*** Installing Homebrew dependencies"
   brew bundle
 }
 
@@ -31,7 +31,7 @@ function copyDotfilesDir() {
   printMessage "*** Copying .dotfiles dir"
 	 rsync --exclude ".git/" \
 	 	--exclude ".DS_Store" \
-	 	-avh --no-perms dotfiles/ ~/.dotfiles;
+	 	-avh --no-perms Scripts/dotfiles/ ~/.dotfiles;
 }
 
 function setupSimLinks() {
@@ -47,18 +47,18 @@ function setupSimLinks() {
 
 # Install Xcode themes
 function installXcodeThemes() {
-  ./XcodeThemes/install-xcode-themes
+  ./Scripts/XcodeThemes/install-xcode-themes
 }
 
 # Setup macOS Preferences
 function setupPrefs() {
-  ./Prefs/setup-macos-prefs
+  ./Scripts/Prefs/setup-macos-prefs
 }
 
 # Restore Dock Elements
 function restoreDock() {
   printMessage "*** Restoring the Dock elements"
-  cp Prefs/com.apple.dock.plist ~/Library/Preferences/
+  cp Scripts/Prefs/com.apple.dock.plist ~/Library/Preferences/
   killall "Dock"
 }
 
@@ -83,7 +83,7 @@ function start() {
   installXcodeThemes;
   setupPrefs;
   restoreDock;
-  installOhMyZsh;
+  # installOhMyZsh;
   printMessage "*** Finished."
 }
 

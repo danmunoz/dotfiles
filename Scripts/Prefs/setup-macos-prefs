@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source ./Utilities/print-color
+source ./Scripts/Utilities/print-color
 
 printMessage "*** Setting up macOS Preferences"
 
