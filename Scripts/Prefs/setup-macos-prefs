@@ -7,18 +7,36 @@ printMessage "*** Setting up macOS Preferences"
 # settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
 
+# https://tonsky.me/blog/monitors/
+# Disabling subpixel font smoothing
+defaults -currentHost write -g AppleFontSmoothing -int 0
+
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
 
+# Enable automatic software update checks
+defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
+
+# Download newly available updates in background
+defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
+
+# Show favorites bar
+defaults write -app Safari ShowFavoritesBar-v2 -bool true
+
 # Enable the Develop menu and the Web Inspector in Safari
+defaults write com.apple.Safari IncludeInternalDebugMenu -bool false
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+defaults write "com.apple.Safari" "WebKitPreferences.developerExtrasEnabled" '1'
+defaults write "com.apple.Safari" "IncludeDevelopMenu" '1'
+defaults write "com.apple.Safari.SandboxBroker" "ShowDevelopMenu" '1'
 
 # Don’t display the annoying prompt when quitting iTerm2
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 
 # Trackpad: enable tap to click for this user and for the login screen
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
