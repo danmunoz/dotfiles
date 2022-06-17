@@ -3,8 +3,8 @@ source ./Scripts/Utilities/print-color
 
 set -e
 
-# Check for Homebrew and install if we don't have it
-function setupHomebrew() {
+# Installs Homebrew or updates it if it was already installed
+function installHomebrew() {
   if ! command -v brew >/dev/null; then
     printMessage "*** Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -106,7 +106,7 @@ function start() {
   # Keep-alive: update existing `sudo` time stamp until `.setup` has finished
   while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-  setupHomebrew
+  installHomebrew
   installXcode
   installHomebrewDependencies
   installOhMyZsh
@@ -141,8 +141,6 @@ if [ "$1" == "--force" -o "$1" == "-f" ]; then
 else
   cecho "This may overwrite existing files in your home directory. Do you want to continue? (y/n) " $white
   read -r response
-	# read -p "This may overwrite existing files in your home directory. Do you want to continue? (y/n) " -n 1
-	# printMessage ""
 	if [[ $response =~ ^([Yy][eE][sS]|[yY])$ ]]; then
 		start
 	fi
