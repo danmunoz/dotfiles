@@ -24,6 +24,7 @@ defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
 defaults write -app Safari ShowFavoritesBar-v2 -bool true
 
 # Enable the Develop menu and the Web Inspector in Safari
+open -ja safari # Open safari at least once before configuring defaults.
 defaults write com.apple.Safari IncludeInternalDebugMenu -bool false
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
