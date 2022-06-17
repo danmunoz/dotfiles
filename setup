@@ -90,6 +90,7 @@ function checkFullDiskAccess() {
   if ! plutil -lint /Library/Preferences/com.apple.TimeMachine.plist >/dev/null ; then
   printErrorMessage "This script requires your terminal app to have Full Disk Access."
   printErrorMessage "Add this terminal to the Full Disk Access list in \nSystem Preferences > Security & Privacy, quit the app, and re-run this script."
+  open /System/Library/PreferencePanes/Security.prefPane
   exit 1
 fi
 }
