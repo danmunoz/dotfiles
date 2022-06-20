@@ -109,7 +109,7 @@ function start() {
   echo "Please restart the system."
 }
 
-# Initial prompt (Inspired by @cdzombak)
+# Initial prompt
 echo ""
 echo "   ------                           ------"
 echo "   ------    macOS Configuration    ------"
