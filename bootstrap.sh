@@ -47,6 +47,7 @@ function setupSimLinks() {
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     ln -sfn $HOME/.dotfiles/.zshrc $HOME/.zshrc
     ln -sfn $HOME/.dotfiles/.gitconfig $HOME/.gitconfig
+    ln -sfn $HOME/.dotfiles/.gitignore $HOME/.gitignore
   fi
 }
 

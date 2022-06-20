@@ -3,4 +3,4 @@
 # User configuration
 alias grs1="git reset --soft HEAD~1"
 alias aliases="acs"
-alias r="cd ~/Repos"
+alias repos="cd ~/Repos"
