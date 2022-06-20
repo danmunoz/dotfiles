@@ -1,7 +1,7 @@
 # macOS initial configuration (Daniel's dotfiles)
 
 Dotfiles and Initial macOS configuration, including:
-- Dotfiles (.zshrc & .gitconfig)
+- Dotfiles (.zshrc, .gitconfig, etc)
 - macOS apps installation using Homebrew's Bundle
 - macOS configuration
 - Xcode themes installation
