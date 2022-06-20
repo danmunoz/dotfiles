@@ -1,6 +1,13 @@
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+# Load the shell dotfiles
+# .extra can be used for other settings you don't want to commit
+for file in ~/.dotfiles/.{aliases,functions,extra}; do
+	[ -r "$file" ] && [ -f "$file" ] && source "$file";
+done;
+unset file;
+
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="robbyrussell"
 
@@ -11,10 +18,3 @@ COMPLETION_WAITING_DOTS="true"
 plugins=(git aliases)
 
 source $ZSH/oh-my-zsh.sh
-
-# User configuration
-alias grs1="git reset --soft HEAD~1"
-alias issuu="cd ~/Repos/frontend-ios-app"
-alias isu="cd ~/Repos/frontend-ios-app"
-alias recap="cd ~/Repos/Recap/"
-alias aliases="acs"

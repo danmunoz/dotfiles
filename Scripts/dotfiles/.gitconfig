@@ -1,0 +1,4 @@
+[mergetool]
+	keepBackup = true
+[core]
+	filemode = false

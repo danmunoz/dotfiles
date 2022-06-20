@@ -46,8 +46,8 @@ function setupSimLinks() {
   read -p "This operation will replace existing zshrc and gitconfig files. Do you wish to continue? (y/n) " -n 1
   echo ""
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    ln -sfn $HOME/.dotfiles/zshrc $HOME/.zshrc
-    ln -sfn $HOME/.dotfiles/gitconfig $HOME/.gitconfig
+    ln -sfn $HOME/.dotfiles/.zshrc $HOME/.zshrc
+    ln -sfn $HOME/.dotfiles/.gitconfig $HOME/.gitconfig
   fi
 }
 
