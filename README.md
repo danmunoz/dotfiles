@@ -34,11 +34,11 @@ Once you have the files on your machine, just run the bootstrap script:
 ./bootstrap.sh
 ```
 
-### Add [some] custom commands without creating a new fork
+### Private information customization
 
-If `.extra` exists in `/.dotfiles`, it will be sourced along with the other files. You can use this to add a few custom commands without the need to fork this entire repository, or to add commands you don’t want to commit to a public repository.
+In order to keep private information (e.g. git name) outside of a public repository, there's the possibility to add an additional file named `.extra` into the `./dotfiles` directory which will be sourced by `.zshrc` every time terminal is launched.
 
-My `.extra` looks something like this:
+This is how my `.extra` file would look like:
 
 ```bash
 # Git credentials
