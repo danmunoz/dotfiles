@@ -68,6 +68,10 @@ function restoreDock() {
   killall "Dock"
 }
 
+function addVSCodeToTower() {
+  ./Scripts/Prefs/Tower/install
+}
+
 function installOhMyZsh() {
   printMessage "*** Installing Oh-my-zsh"
   rm -rf ~/.oh-my-zsh
@@ -102,6 +106,7 @@ function start() {
   setupSimLinks
   installXcodeThemes
   setupPrefs
+  addVSCodeToTower
   restoreDock
   cecho "*** Finished." $green
   cecho "macOS configuration complete." $white
