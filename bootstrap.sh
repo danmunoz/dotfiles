@@ -60,6 +60,16 @@ function setupSymLinks() {
   fi
 }
 
+# Runs commands passed on the run-once.sh file (Optional)
+function runPrivateCommands() {
+  if [ -f "Scripts/dotfiles/run-once.sh" ]; then
+    printMessage "*** Running private commands"
+    echo -e "${magenta}run-once.sh${_reset}${BIBlue} file was found, running script."
+    sudo chmod u+x Scripts/dotfiles/run-once.sh
+    ./Scripts/dotfiles/run-once.sh
+  fi
+}
+
 # Install Xcode themes
 function installXcodeThemes() {
   ./Scripts/XcodeThemes/install-xcode-themes
@@ -105,7 +115,8 @@ function start() {
   checkFullDiskAccess
 
   # Ask for the administrator password upfront
-  echo -e "${BIBlue}This script will use ${magenta}sudo${_reset} ${BIBlue}enter your password to authenticate if prompted.${_reset}"
+  echo -e "${BIBlue}This script will use ${magenta}sudo${_reset}"
+  echo -e "${BIBlue}If prompted, please enter your password to authenticate.${_reset}"
   sudo -v
 
   # Keep-alive: update existing `sudo` time stamp until `.setup` has finished
@@ -121,6 +132,7 @@ function start() {
   setupPrefs
   addVSCodeToTower
   restoreDock
+  runPrivateCommands
   cecho "*** Finished." $green
   cecho "macOS configuration complete." $white
   cecho "Note that some of these changes require a logout/restart to take effect." $white
@@ -145,9 +157,12 @@ echo ""
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
 	start
 else
-  cecho "This may overwrite existing files in your home directory. Do you want to continue? (y/n) " $white
+  cecho "This may overwrite existing files in your home directory." $white
+  cecho "Do you want to continue? (y/n) " $white
   read -r response
 	if [[ $response =~ ^([Yy][eE][sS]|[yY])$ ]]; then
 		start
+  else
+    cecho "Goodbye!" $green
 	fi
 fi
