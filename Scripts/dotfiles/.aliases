@@ -4,3 +4,6 @@
 alias grs1="git reset --soft HEAD~1"
 alias aliases="acs"
 alias repos="cd ~/Repos"
+alias sf="swiftformat ."
+alias runtimes="open /Library/Developer/CoreSimulator/Profiles/Runtimes"
+alias shared-xcode="open ~/Library/Developer/Xcode"
