@@ -62,12 +62,10 @@ function setupSymLinks() {
 
 # Runs commands passed on the run-once file (Optional)
 function runPrivateCommands() {
-  if [ -f "Scripts/dotfiles/run-once" ]; then
-    printMessage "*** Running private commands"
-    echo -e "${magenta}run-once${_reset}${BIBlue} file was found, running script."
-    sudo chmod u+x Scripts/dotfiles/run-once
-    ./Scripts/dotfiles/run-once
-  fi
+  printMessage "*** Running private commands"
+  echo -e "${BIBlue}Running ${magenta}run-once${BIBlue} script.${_reset}"
+  sudo chmod u+x Scripts/dotfiles/run-once
+  ./Scripts/dotfiles/run-once
 }
 
 # Install Xcode themes

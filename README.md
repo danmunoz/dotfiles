@@ -36,7 +36,7 @@ Once you have the files on your machine, just run the bootstrap script:
 
 ### Private information customization
 
-In order to keep private information (e.g. git name) outside of a public repository, there's the possibility to add two additional files to the configuration: `extra` and `run-once`.
+In order to keep private information (e.g. git name) outside of a public repository, there's the possibility to customize two files inside the `dotfiles` directory: `extra` and `run-once`.
 #### extra
 The `extra` file, can contain commands that will be sourced by `.zshrc` every time terminal is launched.
 
@@ -45,12 +45,13 @@ This is how an `extra` file would look like:
 ```bash
 # Aliases
 alias secret_project="cd /path/to/secret"
+alias private_folder="cd /path/to/private"
 ```
 
 #### run-once
-The `run-once` script, will be run as part of the `bootstrap` script.
+The `run-once` script, will run as part of the `bootstrap` script.
 
-This is how an `run-once` file would look like:
+This is how a `run-once` file would look like:
 
 ```bash
 #! /usr/bin/env bash
@@ -63,6 +64,7 @@ git config --global user.name "$GIT_AUTHOR_NAME"
 GIT_AUTHOR_EMAIL="daniel@example.com"
 GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 git config --global user.email "$GIT_AUTHOR_EMAIL"
+
 ```
 
 Keep in mind that the main difference between these two files is that `extra` will run every time terminal is launched.
