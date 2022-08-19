@@ -54,9 +54,9 @@ function setupSymLinks() {
   read -p "This operation will replace existing .zshrc, .gitconfig and .gitignore files. Do you wish to continue? (y/n) " -n 1
   echo ""
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    ln -sfn $HOME/.dotfiles/.zshrc $HOME/.zshrc
-    ln -sfn $HOME/.dotfiles/.gitconfig $HOME/.gitconfig
-    ln -sfn $HOME/.dotfiles/.gitignore $HOME/.gitignore
+    ln -sfn $HOME/.dotfiles/zshrc $HOME/.zshrc
+    ln -sfn $HOME/.dotfiles/gitconfig $HOME/.gitconfig
+    ln -sfn $HOME/.dotfiles/gitignore $HOME/.gitignore
   fi
 }
 
