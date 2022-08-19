@@ -36,11 +36,25 @@ Once you have the files on your machine, just run the bootstrap script:
 
 ### Private information customization
 
-In order to keep private information (e.g. git name) outside of a public repository, there's the possibility to add an additional file named `.extra` into the `./dotfiles` directory which will be sourced by `.zshrc` every time terminal is launched.
+In order to keep private information (e.g. git name) outside of a public repository, there's the possibility to add two additional files to the configuration: `extra` and `run-once`.
+#### extra
+The `extra` file, can contain commands that will be sourced by `.zshrc` every time terminal is launched.
 
-This is how my `.extra` file would look like:
+This is how an `extra` file would look like:
 
 ```bash
+# Aliases
+alias secret_project="cd /path/to/secret"
+```
+
+#### run-once
+The `run-once` script, will be run as part of the `bootstrap` script.
+
+This is how an `run-once` file would look like:
+
+```bash
+#! /usr/bin/env bash
+
 # Git credentials
 # Not in the repository, to prevent people from accidentally committing under my name
 GIT_AUTHOR_NAME="Daniel Munoz"
@@ -49,12 +63,11 @@ git config --global user.name "$GIT_AUTHOR_NAME"
 GIT_AUTHOR_EMAIL="daniel@example.com"
 GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 git config --global user.email "$GIT_AUTHOR_EMAIL"
-
-# Aliases
-alias secret_project="cd /path/to/secret"
 ```
 
-You could also use `.extra` to override settings, functions and aliases from my dotfiles repository. It’s probably better to [fork this repository](https://github.com/danmunoz/dotfiles/fork) instead, though.
+Keep in mind that the main difference between these two files is that `extra` will run every time terminal is launched.
+
+You could also use these files to override settings, functions and aliases from my dotfiles repository, but it is a better idea to [fork this repository](https://github.com/danmunoz/dotfiles/fork) instead.
 
 ## Feedback
 
