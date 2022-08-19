@@ -60,13 +60,13 @@ function setupSymLinks() {
   fi
 }
 
-# Runs commands passed on the run-once.sh file (Optional)
+# Runs commands passed on the run-once file (Optional)
 function runPrivateCommands() {
-  if [ -f "Scripts/dotfiles/run-once.sh" ]; then
+  if [ -f "Scripts/dotfiles/run-once" ]; then
     printMessage "*** Running private commands"
-    echo -e "${magenta}run-once.sh${_reset}${BIBlue} file was found, running script."
-    sudo chmod u+x Scripts/dotfiles/run-once.sh
-    ./Scripts/dotfiles/run-once.sh
+    echo -e "${magenta}run-once${_reset}${BIBlue} file was found, running script."
+    sudo chmod u+x Scripts/dotfiles/run-once
+    ./Scripts/dotfiles/run-once
   fi
 }
 
