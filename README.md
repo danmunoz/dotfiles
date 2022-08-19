@@ -34,7 +34,7 @@ Once you have the files on your machine, just run the bootstrap script:
 ./bootstrap.sh
 ```
 
-### Private information customization
+## Private information customization
 
 In order to keep private information (e.g. git name) outside of a public repository, there's the possibility to customize two files inside the `dotfiles` directory: `extra` and `run-once`.
 #### extra
