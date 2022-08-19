@@ -3,7 +3,7 @@ source ./Scripts/Utilities/print-color
 
 set -e
 
-# Installs Homebrew or updates it if it was already installed
+# Install or update Homebrew
 function installHomebrew() {
   if ! command -v brew >/dev/null; then
     printMessage "*** Installing Homebrew..."
@@ -15,6 +15,10 @@ function installHomebrew() {
 }
 
 # Install Xcode
+# Installs mas-cli if needed
+# Installs Xcode from the Mac App Store
+# Sets xcode-select to Xcode's path
+# Accepts xcodebuild's license
 function installXcode() {
   printMessage "*** Installing mas-cli"
   brew install mas
@@ -23,15 +27,18 @@ function installXcode() {
   printMessage "*** Setting xcode-select to Xcode.app"
   sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
   printMessage "*** Accepting xcodebuild's license"
-  sudo xcodebuild -license accept 
+  sudo xcodebuild -license accept
 }
 
 # Install Homebrew dependencies
+# Based on the Brewfile configuration
 function installHomebrewDependencies() {
   printMessage "*** Installing Homebrew dependencies"
   brew bundle
 }
 
+# Copy Dotfiles
+# Copies the dotfiles directory into ~/.dotfiles
 function copyDotfilesDir() {
   printMessage "*** Copying .dotfiles dir"
 	 rsync --exclude ".git/" \
@@ -39,10 +46,12 @@ function copyDotfilesDir() {
 	 	-avh --no-perms Scripts/dotfiles/ ~/.dotfiles;
 }
 
-function setupSimLinks() {
+# Setup Symbolic Links
+# Creates Symbolic links for dotfiles
+function setupSymLinks() {
   printMessage "*** Setting up SymLinks"
   
-  read -p "This operation will replace existing zshrc and gitconfig files. Do you wish to continue? (y/n) " -n 1
+  read -p "This operation will replace existing .zshrc, .gitconfig and .gitignore files. Do you wish to continue? (y/n) " -n 1
   echo ""
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     ln -sfn $HOME/.dotfiles/.zshrc $HOME/.zshrc
@@ -61,23 +70,26 @@ function setupPrefs() {
   ./Scripts/Prefs/setup-macos-prefs
 }
 
-# Restore Dock Elements
+# Restore Dock Configuration
 function restoreDock() {
-  printMessage "*** Restoring the Dock elements"
+  printMessage "*** Restoring the Dock configuration"
   cp Scripts/Prefs/com.apple.dock.plist ~/Library/Preferences/
   killall "Dock"
 }
 
+# Add Visual Studio Code as a merge/diff tool
 function addVSCodeToTower() {
   ./Scripts/Prefs/Tower/install
 }
 
+# Installs Oh My Zsh 
 function installOhMyZsh() {
   printMessage "*** Installing Oh-my-zsh"
   rm -rf ~/.oh-my-zsh
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 }
 
+# Checks Full Disk Access for Terminal
 function checkFullDiskAccess() {
   if ! plutil -lint /Library/Preferences/com.apple.TimeMachine.plist >/dev/null ; then
   printErrorMessage "This script requires your terminal app to have Full Disk Access."
@@ -87,6 +99,7 @@ function checkFullDiskAccess() {
 fi
 }
 
+# Main Function
 function start() {
   printMessage "*** Setting up your Computer..."
   checkFullDiskAccess
@@ -103,7 +116,7 @@ function start() {
   installHomebrewDependencies
   installOhMyZsh
   copyDotfilesDir
-  setupSimLinks
+  setupSymLinks
   installXcodeThemes
   setupPrefs
   addVSCodeToTower
