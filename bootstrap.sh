@@ -87,7 +87,7 @@ function restoreDock() {
 
 # Add Visual Studio Code as a merge/diff tool
 function addVSCodeToTower() {
-  ./Scripts/Prefs/Tower/install
+  ./Scripts/Prefs/Tower/install.sh
 }
 
 # Installs Oh My Zsh 
