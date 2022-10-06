@@ -9,7 +9,6 @@ tap "homebrew/cask-drivers"
 # Mac App Store apps
 brew "mas"
 
-mas "1Password", id: 1333542190
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Keynote", id: 409183694
@@ -17,11 +16,9 @@ mas "Ulysses", id: 1225570693
 mas "Pixelmator Pro", id: 1289583905
 mas "Magnet", id: 441258766
 mas "The Unarchiver", id: 425424353
-mas "GarageBand", id: 682658836
 mas "Mactracker", id: 430255202
 mas "Whatsapp", id: 1147396723
 mas "Slack", id: 803453959
-mas "Spark", id: 1176895641
 mas "TinyStopwatch", id: 1447754003
 mas "DaVinci Resolve", id: 571213070
 mas "1Blocker", id: 1365531024
@@ -31,20 +28,13 @@ mas "1Blocker", id: 1365531024
 mas "Developer", id: 640199958
 mas "RocketSim", id: 1504940162
 mas "Sequel Ace", id: 1518036000
-brew "carthage"
-brew "cocoapods"
-brew "fastlane", link: false
-brew "sourcery"
+brew "fastlane"
 brew "swiftlint"
 brew "swiftformat"
-brew "rswift"
 brew "git-lfs"
-brew "ffmpeg"
 brew "node"
-brew "rbenv"
-brew "rswift"
+brew "adsf"
 brew "mysql"
-cask "mysqlworkbench"
 cask "visual-studio-code"
 cask "tower"
 cask "postman"
@@ -54,6 +44,7 @@ cask "xcodes"
 cask "iterm2"
 
 # Utilities
+cask "1password"
 cask "alfred"
 cask "expressvpn"
 cask "grandperspective"
@@ -64,20 +55,18 @@ cask "keycastr"
 cask "transmission"
 cask "teamviewer"
 cask "figma"
-cask "miro"
 cask "obs"
+cask "google-chrome"
 
 # Communications
 cask "skype"
-cask "google-chrome"
 cask "zoom"
 cask "discord"
 
 # - Gadgets
 cask "elgato-stream-deck"
-cask "logitech-g-hub"
 cask "philips-hue-sync"
 
 # - Other
 cask "raspberry-pi-imager"
-cask "ultimaker-cura"
+# cask "ultimaker-cura"
