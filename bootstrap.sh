@@ -30,6 +30,11 @@ function installXcode() {
   sudo xcodebuild -license accept
 }
 
+# Installs Rosetta 2
+function installRosetta() {
+  /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+}
+
 # Install Homebrew dependencies
 # Based on the Brewfile configuration
 function installHomebrewDependencies() {
@@ -51,10 +56,11 @@ function copyDotfilesDir() {
 function setupSymLinks() {
   printMessage "*** Setting up SymLinks"
   
-  read -p "This operation will replace existing .zshrc, .gitconfig and .gitignore files. Do you wish to continue? (y/n) " -n 1
+  read -p "This operation will replace existing .zshrc, .zprofile, .gitconfig and .gitignore files. Do you wish to continue? (y/n) " -n 1
   echo ""
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     ln -sfn $HOME/.dotfiles/zshrc $HOME/.zshrc
+    ln -sfn $HOME/.dotfiles/zprofile $HOME/.zprofile
     ln -sfn $HOME/.dotfiles/gitconfig $HOME/.gitconfig
     ln -sfn $HOME/.dotfiles/gitignore $HOME/.gitignore
   fi
@@ -122,6 +128,7 @@ function start() {
 
   installHomebrew
   installXcode
+  installRosetta
   installHomebrewDependencies
   installOhMyZsh
   copyDotfilesDir

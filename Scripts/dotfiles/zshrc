@@ -2,8 +2,8 @@
 export ZSH="$HOME/.oh-my-zsh"
 
 # Load the shell dotfiles
-# .extra can be used for other settings you don't want to commit
-for file in ~/.dotfiles/{aliases,functions,commands,extra}; do
+# .extra can be used for other commands
+for file in ~/.dotfiles/{aliases,functions,extra}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;

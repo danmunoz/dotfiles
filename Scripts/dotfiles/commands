@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-# Adds `id_ed25519` ssh key to keychain
-ssh-add --apple-use-keychain ~/.ssh/id_ed25519

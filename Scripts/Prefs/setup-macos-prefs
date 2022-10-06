@@ -33,9 +33,6 @@ defaults write "com.apple.Safari" "WebKitPreferences.developerExtrasEnabled" '1'
 defaults write "com.apple.Safari" "IncludeDevelopMenu" '1'
 defaults write "com.apple.Safari.SandboxBroker" "ShowDevelopMenu" '1'
 
-# Don’t display the annoying prompt when quitting iTerm2
-defaults write com.googlecode.iterm2 PromptOnQuit -bool false
-
 # Trackpad: enable tap to click for this user and for the login screen
 defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
