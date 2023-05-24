@@ -4,7 +4,6 @@ tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
 tap "homebrew/cask-fonts"
-tap "homebrew/cask-drivers"
 
 # Mac App Store apps
 brew "mas"
@@ -22,6 +21,8 @@ mas "Slack", id: 803453959
 mas "TinyStopwatch", id: 1447754003
 mas "DaVinci Resolve", id: 571213070
 mas "1Blocker", id: 1365531024
+cask "1password"
+mas "1Password for Safari", id: 1569813296
 
 # Development
 #mas "Xcode", id: 497799835 #Installed as part of the setup script
@@ -33,7 +34,6 @@ brew "swiftlint"
 brew "swiftformat"
 brew "git-lfs"
 brew "node"
-brew "adsf"
 brew "mysql"
 cask "visual-studio-code"
 cask "tower"
@@ -42,11 +42,10 @@ cask "proxyman"
 cask "font-jetbrains-mono"
 cask "xcodes"
 cask "iterm2"
+cask "bartender"
 
 # Utilities
-cask "1password"
 cask "alfred"
-cask "expressvpn"
 cask "grandperspective"
 cask "vlc"
 cask "istat-menus"
@@ -60,7 +59,6 @@ cask "google-chrome"
 
 # Communications
 cask "skype"
-cask "zoom"
 cask "discord"
 
 # - Gadgets

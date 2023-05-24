@@ -8,6 +8,10 @@ function installHomebrew() {
   if ! command -v brew >/dev/null; then
     printMessage "*** Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+    printMessage "*** Setting up Homebrew shell configuration"
+    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   else
     printMessage "*** Homebrew already installed, updating"
     brew update
@@ -28,6 +32,7 @@ function installXcode() {
   sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
   printMessage "*** Accepting xcodebuild's license"
   sudo xcodebuild -license accept
+  installXcodeThemes
 }
 
 # Installs Rosetta 2
@@ -76,11 +81,13 @@ function runPrivateCommands() {
 
 # Install Xcode themes
 function installXcodeThemes() {
+  printMessage "*** Installing Xcode themes"
   ./Scripts/XcodeThemes/install-xcode-themes
 }
 
 # Setup macOS Preferences
 function setupPrefs() {
+  printMessage "*** Setting up macOS Preferences"
   ./Scripts/Prefs/setup-macos-prefs
 }
 
@@ -102,7 +109,7 @@ function installOhMyZsh() {
 function checkFullDiskAccess() {
   if ! plutil -lint /Library/Preferences/com.apple.TimeMachine.plist >/dev/null ; then
   printErrorMessage "This script requires your terminal app to have Full Disk Access."
-  printErrorMessage "Add this terminal to the Full Disk Access list in \nSystem Preferences > Security & Privacy, quit the app, and re-run this script."
+  printErrorMessage "Add this terminal to the Full Disk Access list in:\nSystem Settings > Privacy & Security > Full Disk Access\nThen, restart the terminal and re-run this script."
   open /System/Library/PreferencePanes/Security.prefPane
   exit 1
 fi
@@ -128,7 +135,6 @@ function start() {
   installOhMyZsh
   copyDotfilesDir
   setupSymLinks
-  installXcodeThemes
   setupPrefs
   restoreDock
   runPrivateCommands

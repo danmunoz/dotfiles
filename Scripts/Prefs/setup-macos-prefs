@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 source ./Scripts/Utilities/print-color
 
-printMessage "*** Setting up macOS Preferences"
-
-# Close any open System Preferences panes, to prevent them from overriding
+# Close any open System Settings panes, to prevent them from overriding
 # settings we’re about to change
-osascript -e 'tell application "System Preferences" to quit'
+# Preferences -> Settings for macOS Ventura
+osascript -e 'tell application "System Settings" to quit'
 
 # https://tonsky.me/blog/monitors/
 # Disabling subpixel font smoothing
@@ -18,20 +17,11 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
 
 # Download newly available updates in background
-defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
+defaults write com.apple.SoftwareUpdate AutomaticDownload -bool true
 
-# Show favorites bar
-defaults write -app Safari ShowFavoritesBar-v2 -bool true
-
-# Enable the Develop menu and the Web Inspector in Safari
+# Enable the Develop menu in Safari
 open -ja safari # Open safari at least once before configuring defaults.
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool false
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
-defaults write "com.apple.Safari" "WebKitPreferences.developerExtrasEnabled" '1'
-defaults write "com.apple.Safari" "IncludeDevelopMenu" '1'
-defaults write "com.apple.Safari.SandboxBroker" "ShowDevelopMenu" '1'
+defaults write com.apple.Safari.SandboxBroker ShowDevelopMenu -bool true
 
 # Trackpad: enable tap to click for this user and for the login screen
 defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
@@ -44,7 +34,7 @@ defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 ###############################################################################
 
 for app in "Dock" \
-  "Safari" \
+	"Safari" \
 	"Finder" \
 	"SystemUIServer"; do
 	killall "${app}" &> /dev/null

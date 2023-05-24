@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 source ./Scripts/Utilities/print-color
 
-printMessage "*** Installing Xcode Themes"
 DESTDIR=~/Library/Developer/Xcode/UserData/FontAndColorThemes/
 mkdir -p $DESTDIR
 find . -name "*.xccolortheme" -exec cp '{}' $DESTDIR \;
