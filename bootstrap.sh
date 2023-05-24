@@ -91,11 +91,6 @@ function restoreDock() {
   killall "Dock"
 }
 
-# Add Visual Studio Code as a merge/diff tool
-function addVSCodeToTower() {
-  ./Scripts/Prefs/Tower/install.sh
-}
-
 # Installs Oh My Zsh 
 function installOhMyZsh() {
   printMessage "*** Installing Oh-my-zsh"
@@ -135,7 +130,6 @@ function start() {
   setupSymLinks
   installXcodeThemes
   setupPrefs
-  addVSCodeToTower
   restoreDock
   runPrivateCommands
   cecho "*** Finished." $green
