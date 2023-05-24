@@ -19,3 +19,8 @@ function o() {
 		open "$@";
 	fi;
 }
+
+# Opens DerivedData directory
+function dd() {
+	open ~/Library/Developer/Xcode/DerivedData
+}
