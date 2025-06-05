@@ -59,7 +59,8 @@ function install_homebrew() {
     echo ""
 
     printMessage "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    # Use NONINTERACTIVE=1 to prevent prompts during Homebrew installation
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
     printMessage "Setting up Homebrew shell configuration..."
     echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
