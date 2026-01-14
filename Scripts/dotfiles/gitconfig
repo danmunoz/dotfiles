@@ -2,3 +2,11 @@
 	keepBackup = true
 [core]
 	filemode = false
+[user]
+	name = [enter name here]
+	email = [enter email here]]
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

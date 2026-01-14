@@ -1,8 +1,10 @@
 cask_args appdir: "/Applications"
+tap "steipete/tap"
+
+brew "mas"
+cask "1password"
 
 # Mac App Store apps
-brew "mas"
-
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Keynote", id: 409183694
@@ -11,36 +13,42 @@ mas "The Unarchiver", id: 425424353
 mas "Mactracker", id: 430255202
 mas "Slack", id: 803453959
 mas "TinyStopwatch", id: 1447754003
-cask "1password"
 mas "1Password for Safari", id: 1569813296
-
-# Development
 #mas "Xcode", id: 497799835 #Installed as part of the setup script
 mas "Developer", id: 640199958
 mas "RocketSim", id: 1504940162
+
+brew "asdf"
+brew "cocoapods"
 brew "fastlane"
-brew "swiftlint"
-brew "swiftformat"
-brew "git-lfs"
 brew "node"
-brew "mysql"
-cask "visual-studio-code"
-cask "tower"
+brew "gh"
+brew "git-lfs"
+brew "mstch"
+brew "periphery"
+brew "rbenv-bundler"
+brew "sourcery"
+brew "swiftformat"
+brew "swiftlint"
+brew "xcodegen"
+cask "alfred"
+cask "figma"
+cask "font-jetbrains-mono"
+cask "google-chrome"
+cask "grandperspective"
+cask "istat-menus"
+cask "iterm2"
 cask "postman"
 cask "proxyman"
-cask "font-jetbrains-mono"
-cask "xcodes"
-cask "iterm2"
-
-# Utilities
-cask "alfred"
-cask "bartender"
-cask "grandperspective"
+cask "tower"
+cask "visual-studio-code"
 cask "vlc"
-cask "istat-menus"
-cask "figma"
-cask "google-chrome"
-cask "miro"
-
-# - Gadgets
-cask "elgato-stream-deck"
+cask "xcodes-app"
+vscode "dnicolson.binary-plist"
+vscode "github.copilot"
+vscode "github.copilot-chat"
+vscode "llvm-vs-code-extensions.lldb-dap"
+vscode "mariomatheu.syntax-project-pbxproj"
+vscode "mechatroner.rainbow-csv"
+vscode "prateekmahendrakar.prettyxml"
+vscode "swiftlang.swift-vscode"
