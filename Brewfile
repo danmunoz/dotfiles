@@ -1,5 +1,4 @@
 cask_args appdir: "/Applications"
-tap "steipete/tap"
 
 brew "mas"
 cask "1password"
@@ -12,8 +11,7 @@ mas "Ulysses", id: 1225570693
 mas "Pixelmator Pro", id: 1289583905
 mas "The Unarchiver", id: 425424353
 mas "Mactracker", id: 430255202
-mas "Whatsapp", id: 1147396723
-mas "Slack", id: 803453959
+mas "Whatsapp", id: 310633997
 mas "TinyStopwatch", id: 1447754003
 mas "1Blocker", id: 1365531024
 mas "1Password for Safari", id: 1569813296
@@ -40,7 +38,9 @@ brew "tmux"
 brew "xcbeautify"
 brew "xcodegen"
 cask "alfred"
-cask "codexbar"
+cask "steipete/tap/codexbar"
+cask "codex"
+cask "claude-code"
 cask "discord"
 cask "elgato-stream-deck"
 cask "figma"
@@ -56,6 +56,8 @@ cask "transmission"
 cask "visual-studio-code"
 cask "vlc"
 cask "xcodes-app"
+cask "android-studio"
+cask "ghostty"
 # cask "forecast"
 # cask "keycastr"
 # cask "obs"

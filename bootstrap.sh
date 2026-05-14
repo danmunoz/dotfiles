@@ -25,13 +25,39 @@ start_time=$(date +%s)
 
 # --- Helper Functions ---
 
+# Reads a single character with a visible countdown.
+function read_with_timeout() {
+  local timeout="$1"
+  local label="$2"
+  local input=""
+  local remaining="$timeout"
+
+  if [ -z "$label" ]; then
+    label="Continuing"
+  fi
+
+  while (( remaining > 0 )); do
+    printf "\r${yellow2}%s in %2ds...${_reset}" "$label" "$remaining"
+    if read -t 1 -n 1 -r input; then
+      [[ "$input" == $'\n' ]] && input=""
+      echo ""
+      REPLY="$input"
+      return 0
+    fi
+    ((remaining--))
+  done
+
+  echo ""
+  REPLY=""
+  return 1
+}
+
 # Prompts the user to review and edit the Brewfile.
 function edit_brewfile() {
   local _response="y" # Default to 'y'
   print_question "\nDo you want to review and edit the Brewfile before proceeding with the installation? (y/n) (Defaults to yes in $prompt_timeout seconds)"
-  if read -t "$prompt_timeout" -n 1 -r _user_input; then
-    _response="$_user_input"
-    echo "" # Newline after user input
+  if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+    _response="$REPLY"
   else
     echo "" # Newline after timeout
     # _response remains "y"
@@ -40,8 +66,7 @@ function edit_brewfile() {
   if [[ "$_response" =~ ^[Yy]$ ]]; then
     local editor="${VISUAL-${EDITOR-nano}}"
     echo -en "📝  ${white}Opening Brewfile in ${editor}...${_reset}\n"
-    if [ "$environment" -eq "$PERSONAL_ENV" ]; then
-      "${editor}" Brewfile
+    if [ "$environment" -eq "$PERSONAL_ENV" ]; then      "${editor}" Brewfile
     else
       "${editor}" work/Brewfile-work
     fi
@@ -55,8 +80,7 @@ function install_homebrew() {
   if ! command -v brew >/dev/null 2>&1; then
     # This prompt already defaults to proceeding if timeout occurs, as 'read' just pauses.
     print_question "\nHomebrew is not installed. Press any key to begin installation (installation will proceed automatically after $prompt_timeout seconds)..."
-    read -t "$prompt_timeout" -n 1 -r || true # '|| true' prevents script from exiting if timeout occurs.
-    echo ""
+    read_with_timeout "$prompt_timeout" "Auto-continue" || true
 
     printMessage "Installing Homebrew..."
     # Use NONINTERACTIVE=1 to prevent prompts during Homebrew installation
@@ -93,9 +117,8 @@ function install_xcode() {
 function install_rosetta() {
   local _response="y" # Default to 'y'
   print_question "\nRosetta 2 is required for some Intel-based applications. Install it now? (y/n) (Defaults to yes in $prompt_timeout seconds)"
-  if read -t "$prompt_timeout" -n 1 -r _user_input; then
-    _response="$_user_input"
-    echo "" # Newline after user input
+  if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+    _response="$REPLY"
   else
     echo "" # Newline after timeout
     # _response remains "y"
@@ -104,8 +127,7 @@ function install_rosetta() {
   if [[ "$_response" =~ ^[Yy]$ ]]; then
     printMessage "Installing Rosetta 2..."
     /usr/sbin/softwareupdate --install-rosetta --agree-to-license || printErrorMessage "Failed to install Rosetta 2."
-  else
-    printMessage "Skipping Rosetta 2 installation."
+  else    printMessage "Skipping Rosetta 2 installation."
   fi
 }
 
@@ -113,9 +135,8 @@ function install_rosetta() {
 function install_homebrew_dependencies() {
   local _response="y" # Default to 'y'
   print_question "\nProceed with package installation via Brewfile? (y/n) (Defaults to yes in $prompt_timeout seconds)"
-  if read -t "$prompt_timeout" -n 1 -r _user_input; then
-    _response="$_user_input"
-    echo "" # Newline after user input
+  if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+    _response="$REPLY"
   else
     echo "" # Newline after timeout
     # _response remains "y"
@@ -124,8 +145,7 @@ function install_homebrew_dependencies() {
   if [[ "$_response" =~ ^[Yy]$ ]]; then
     printMessage "Installing Homebrew dependencies from Brewfile..."
     if [ "$environment" -eq "$PERSONAL_ENV" ]; then
-      brew bundle
-    else
+      brew bundle    else
       brew bundle --file=work/Brewfile-work
     fi
   else
@@ -137,9 +157,8 @@ function install_homebrew_dependencies() {
 function copy_dotfiles_dir() {
   local _response="y" # Default to 'y'
   print_question "\nDo you want to copy the .dotfiles directory to your home folder (~/.dotfiles)? (y/n) (Defaults to yes in $prompt_timeout seconds)"
-  if read -t "$prompt_timeout" -n 1 -r _user_input; then
-    _response="$_user_input"
-    echo "" # Newline after user input
+  if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+    _response="$REPLY"
   else
     echo "" # Newline after timeout
     # _response remains "y"
@@ -148,8 +167,7 @@ function copy_dotfiles_dir() {
   if [[ "$_response" =~ ^[Yy]$ ]]; then
     printMessage "Copying .dotfiles directory to $HOME/.dotfiles..."
     rsync --exclude ".git/" \
-          --exclude ".DS_Store" \
-          -avh --no-perms Scripts/dotfiles/ "$HOME/.dotfiles" || printErrorMessage "Failed to copy dotfiles."
+          --exclude ".DS_Store" \          -avh --no-perms Scripts/dotfiles/ "$HOME/.dotfiles" || printErrorMessage "Failed to copy dotfiles."
   else
     printMessage "Skipping .dotfiles directory copy."
   fi
@@ -160,9 +178,8 @@ function setup_symlinks() {
   local _response="y" # Default to 'y'
   print_question "\nDo you want to set up symbolic links for dotfiles?"
   print_question "NOTE: This operation will replace existing .zshrc, .zprofile, .gitconfig, and .gitignore files. (y/n) (Defaults to yes in $prompt_timeout seconds)"
-  if read -t "$prompt_timeout" -n 1 -r _user_input; then
-    _response="$_user_input"
-    echo "" # Newline after user input
+  if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+    _response="$REPLY"
   else
     echo "" # Newline after timeout
     # _response remains "y"
@@ -171,8 +188,7 @@ function setup_symlinks() {
   if [[ "$_response" =~ ^[Yy]$ ]]; then
     printMessage "Setting up symbolic links..."
     ln -sfn "$HOME/.dotfiles/zshrc" "$HOME/.zshrc" || printErrorMessage "Failed to link .zshrc"
-    ln -sfn "$HOME/.dotfiles/zprofile" "$HOME/.zprofile" || printErrorMessage "Failed to link .zprofile"
-    ln -sfn "$HOME/.dotfiles/gitconfig" "$HOME/.gitconfig" || printErrorMessage "Failed to link .gitconfig"
+    ln -sfn "$HOME/.dotfiles/zprofile" "$HOME/.zprofile" || printErrorMessage "Failed to link .zprofile"    ln -sfn "$HOME/.dotfiles/gitconfig" "$HOME/.gitconfig" || printErrorMessage "Failed to link .gitconfig"
     ln -sfn "$HOME/.dotfiles/gitignore" "$HOME/.gitignore" || printErrorMessage "Failed to link .gitignore"
   else
     printMessage "Skipping symbolic link setup."
@@ -184,9 +200,8 @@ function run_private_commands() {
   if [ -f "Scripts/dotfiles/run-once" ]; then
     local _response="y" # Default to 'y'
     print_question "\nDo you want to run additional private setup commands from 'run-once'? (y/n) (Defaults to yes in $prompt_timeout seconds)"
-    if read -t "$prompt_timeout" -n 1 -r _user_input; then
-      _response="$_user_input"
-      echo "" # Newline after user input
+    if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+      _response="$REPLY"
     else
       echo "" # Newline after timeout
       # _response remains "y"
@@ -195,8 +210,7 @@ function run_private_commands() {
     if [[ "$_response" =~ ^[Yy]$ ]]; then
       printMessage "Running private commands from Scripts/dotfiles/run-once..."
       chmod u+x Scripts/dotfiles/run-once
-      echo -e "${BIBlue}Executing ${magenta}run-once${BIBlue} script.${_reset}"
-      ./Scripts/dotfiles/run-once || printErrorMessage "Failed to execute 'run-once' script."
+      echo -e "${BIBlue}Executing ${magenta}run-once${BIBlue} script.${_reset}"      ./Scripts/dotfiles/run-once || printErrorMessage "Failed to execute 'run-once' script."
     else
       printMessage "Skipping private command execution."
     fi
@@ -210,9 +224,8 @@ function install_xcode_themes() {
   if [ -f "Scripts/XcodeThemes/install-xcode-themes" ]; then
     local _response="y" # Default to 'y'
     print_question "\nWould you like to install Xcode themes? (y/n) (Defaults to yes in $prompt_timeout seconds)"
-    if read -t "$prompt_timeout" -n 1 -r _user_input; then
-      _response="$_user_input"
-      echo "" # Newline after user input
+    if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+      _response="$REPLY"
     else
       echo "" # Newline after timeout
       # _response remains "y"
@@ -221,8 +234,7 @@ function install_xcode_themes() {
     if [[ "$_response" =~ ^[Yy]$ ]]; then
       printMessage "Installing Xcode themes..."
       ./Scripts/XcodeThemes/install-xcode-themes || printErrorMessage "Failed to install Xcode themes."
-    else
-      printMessage "Skipping Xcode theme installation."
+    else      printMessage "Skipping Xcode theme installation."
     fi
   else
     printMessage "Xcode themes installer not found. Skipping."
@@ -234,9 +246,8 @@ function setup_macos_prefs() {
   if [ -f "Scripts/Prefs/setup-macos-prefs" ]; then
     local _response="y" # Default to 'y'
     print_question "\nWould you like to apply your macOS system preferences? (y/n) (Defaults to yes in $prompt_timeout seconds)"
-    if read -t "$prompt_timeout" -n 1 -r _user_input; then
-      _response="$_user_input"
-      echo "" # Newline after user input
+    if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+      _response="$REPLY"
     else
       echo "" # Newline after timeout
       # _response remains "y"
@@ -245,8 +256,7 @@ function setup_macos_prefs() {
     if [[ "$_response" =~ ^[Yy]$ ]]; then
       printMessage "Setting up macOS Preferences..."
       ./Scripts/Prefs/setup-macos-prefs || printErrorMessage "Failed to set macOS preferences."
-    else
-      printMessage "Skipping macOS system preference setup."
+    else      printMessage "Skipping macOS system preference setup."
     fi
   else
     printMessage "macOS preferences script not found. Skipping."
@@ -257,9 +267,8 @@ function setup_macos_prefs() {
 function restore_dock_config() {
   local _response="y" # Default to 'y'
   print_question "\nDo you want to restore your custom Dock configuration? (y/n) (Defaults to yes in $prompt_timeout seconds)"
-  if read -t "$prompt_timeout" -n 1 -r _user_input; then
-    _response="$_user_input"
-    echo "" # Newline after user input
+  if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+    _response="$REPLY"
   else
     echo "" # Newline after timeout
     # _response remains "y"
@@ -268,8 +277,7 @@ function restore_dock_config() {
   if [[ "$_response" =~ ^[Yy]$ ]]; then
     printMessage "Restoring the Dock configuration..."
     local dock_plist=""
-    if [ "$environment" -eq "$PERSONAL_ENV" ]; then
-      dock_plist="Scripts/Prefs/com.apple.dock.plist"
+    if [ "$environment" -eq "$PERSONAL_ENV" ]; then      dock_plist="Scripts/Prefs/com.apple.dock.plist"
     else
       dock_plist="work/com.apple.dock.plist"
     fi
@@ -333,8 +341,8 @@ function start_installation() {
   echo "2. Work"
   # This prompt is explicitly excluded from defaulting to "yes"
   print_question "Select your environment (1 or 2): "
-  read -t "$prompt_timeout" -n 1 -r response
-  echo "" # Newline for cleaner output
+  read_with_timeout "$prompt_timeout" "Timeout"
+  response="$REPLY"
 
   case "$response" in
     "$PERSONAL_ENV")
@@ -410,9 +418,8 @@ function intro_prompt() {
     local _response="y" # Default to 'y'
     cecho "This script may overwrite existing files in your home directory." "$question_color"
     cecho "Do you want to continue? (y/n) (Defaults to yes in $prompt_timeout seconds) " "$question_color"
-    if read -t "$prompt_timeout" -n 1 -r _user_input; then
-      _response="$_user_input"
-      echo "" # Newline after user input
+    if read_with_timeout "$prompt_timeout" "Auto-continue"; then
+      _response="$REPLY"
     else
       echo "" # Newline after timeout
       # _response remains "y"
