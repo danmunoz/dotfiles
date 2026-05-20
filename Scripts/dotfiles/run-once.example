@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Copy ideas from this file into ~/.dotfiles/run-once.
+# Secrets and private machine setup are intentionally local-only.

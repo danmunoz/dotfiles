@@ -2,9 +2,10 @@
 	keepBackup = true
 [core]
 	filemode = false
+	excludesfile = ~/.gitignore
 [user]
-	name = [enter name here]
-	email = [enter email here]]
+	name = Dan Munoz
+	email = dev@danmunoz.com
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

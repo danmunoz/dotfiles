@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage:
+  reset-android-emulator [--smoke [AVD_NAME]]
+  reset-android-emulator --help
+
+Options:
+  --smoke [AVD_NAME]  Boot one AVD headless after reset, then shut it down.
+                      If AVD name omitted, first available AVD is used.
+  -h, --help          Show this help.
+EOF
+}
+
+sdk="${ANDROID_SDK_ROOT:-$HOME/Library/Android/sdk}"
+emulator_bin="$sdk/emulator/emulator"
+avd_root="$HOME/.android/avd"
+running_cache="$HOME/Library/Caches/TemporaryItems/avd/running"
+smoke=0
+avd_name=""
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+if [[ "${1:-}" == "--smoke" ]]; then
+  smoke=1
+  shift
+fi
+avd_name="${1:-}"
+
+command -v adb >/dev/null 2>&1 || { echo "missing: adb"; exit 1; }
+command -v trash >/dev/null 2>&1 || { echo "missing: trash"; exit 1; }
+[[ -x "$emulator_bin" ]] || { echo "missing emulator: $emulator_bin"; exit 1; }
+
+echo "Stopping adb + emulator processes..."
+adb kill-server >/dev/null 2>&1 || true
+pkill -f "qemu-system|/emulator/|Android Emulator|crashpad_handler.*AndroidEmulator" >/dev/null 2>&1 || true
+sleep 1
+
+echo "Trashing volatile AVD state..."
+if [[ -d "$avd_root" ]]; then
+  while IFS= read -r -d '' f; do
+    trash "$f"
+  done < <(find "$avd_root" -type f \( \
+    -name "userdata-qemu.img*" -o \
+    -name "cache.img*" -o \
+    -name "*.lock" -o \
+    -name "read-snapshot.txt" -o \
+    -name "emulator-user.ini" -o \
+    -name "version_num.cache" \
+  \) -print0)
+
+  while IFS= read -r -d '' d; do
+    trash "$d"
+  done < <(find "$avd_root" -type d -name "snapshots" -print0)
+fi
+
+if [[ -d "$running_cache" ]]; then
+  trash "$running_cache"
+fi
+mkdir -p "$running_cache"
+
+echo "Restarting adb..."
+adb start-server >/dev/null 2>&1 || true
+adb devices -l
+
+if [[ $smoke -eq 1 ]]; then
+  if [[ -z "$avd_name" ]]; then
+    avd_name="$($emulator_bin -list-avds | head -n 1)"
+  fi
+  [[ -n "$avd_name" ]] || { echo "No AVD found for smoke test."; exit 1; }
+
+  log="/tmp/emulator-reset-smoke-$(date +%s).log"
+  echo "Smoke boot: $avd_name"
+  "$emulator_bin" -avd "$avd_name" -no-window -no-audio -no-snapshot-load -gpu swiftshader_indirect > "$log" 2>&1 &
+  sleep 22
+  adb devices -l
+  pkill -f "emulator.*${avd_name}|qemu-system.*${avd_name}|/emulator/qemu" >/dev/null 2>&1 || true
+  sleep 1
+  echo "Smoke log: $log"
+  tail -n 40 "$log"
+
+  adb kill-server >/dev/null 2>&1 || true
+  adb start-server >/dev/null 2>&1 || true
+fi
+
+echo "Final adb reset..."
+adb kill-server >/dev/null 2>&1 || true
+adb start-server >/dev/null 2>&1 || true
+adb devices -l
+
+echo "Done. Android emulator state reset."

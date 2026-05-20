@@ -1,2 +1,24 @@
 # Set PATH, MANPATH, etc., for Homebrew.
 eval "$(/opt/homebrew/bin/brew shellenv)"
+
+path_prepend() {
+  local dir="$1"
+  if [ -d "$dir" ] && [[ ":$PATH:" != *":$dir:"* ]]; then
+    export PATH="$dir:$PATH"
+  fi
+}
+
+path_append() {
+  local dir="$1"
+  if [ -d "$dir" ] && [[ ":$PATH:" != *":$dir:"* ]]; then
+    export PATH="$PATH:$dir"
+  fi
+}
+
+# Initialize rbenv for login shells (including non-interactive zsh -lc).
+if command -v rbenv >/dev/null 2>&1; then
+  eval "$(rbenv init - zsh)"
+fi
+
+path_append "$HOME/.local/bin"
+path_prepend "$HOME/Repos/agentic-config/scripts"

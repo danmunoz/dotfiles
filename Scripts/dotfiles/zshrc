@@ -1,12 +1,37 @@
+# OPENSPEC:START
+# OpenSpec shell completions configuration
+fpath=("$HOME/.oh-my-zsh/custom/completions" $fpath)
+autoload -Uz compinit
+compinit
+# OPENSPEC:END
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Load the shell dotfiles
-# .extra can be used for other commands
-for file in ~/.dotfiles/{aliases,functions,extra}; do
-	[ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-unset file;
+# Load the shell dotfiles.
+DOTFILES_DIR="$HOME/.dotfiles"
+
+path_prepend() {
+  local dir="$1"
+  if [ -d "$dir" ] && [[ ":$PATH:" != *":$dir:"* ]]; then
+    export PATH="$dir:$PATH"
+  fi
+}
+
+path_append() {
+  local dir="$1"
+  if [ -d "$dir" ] && [[ ":$PATH:" != *":$dir:"* ]]; then
+    export PATH="$PATH:$dir"
+  fi
+}
+
+# Executable utility scripts (no sourcing needed).
+path_prepend "$DOTFILES_DIR/scripts"
+
+for file in "$DOTFILES_DIR"/{aliases,functions.zsh,extra}; do
+  [ -r "$file" ] && [ -f "$file" ] && source "$file"
+done
+unset file
 
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="robbyrussell"
@@ -17,7 +42,25 @@ COMPLETION_WAITING_DOTS="true"
 # Oh-my-zsh Plugins
 plugins=(git aliases)
 
-source $ZSH/oh-my-zsh.sh
+if [ -r "$ZSH/oh-my-zsh.sh" ]; then
+  source "$ZSH/oh-my-zsh.sh"
+fi
 
-# Needed on Apple Silicon
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+# Needed on Apple Silicon.
+path_prepend "/opt/homebrew/opt/ruby/bin"
+
+# Initialize rbenv so per-project Ruby versions (e.g. .ruby-version) take effect.
+if command -v rbenv >/dev/null 2>&1; then
+  eval "$(rbenv init - zsh)"
+fi
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+path_prepend "$BUN_INSTALL/bin"
+
+path_append "$HOME/.local/bin"
+path_prepend "/opt/homebrew/opt/python@3.10/bin"
+path_prepend "$HOME/Repos/agentic-config/scripts"

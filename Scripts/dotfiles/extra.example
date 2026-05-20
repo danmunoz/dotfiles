@@ -1,0 +1,4 @@
+# Copy ideas from this file into ~/.dotfiles/extra.
+
+# alias secret_project="cd /path/to/secret"
+# export PRIVATE_ENV_VAR="value"

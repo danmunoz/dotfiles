@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+REPO_URL="${DOTFILES_REPO_URL:-https://github.com/danmunoz/dotfiles.git}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEFAULT_REPO_DIR="$HOME/Repos/dotfiles"
+
+if [[ -d "$SCRIPT_DIR/.git" ]] && [[ -x "$SCRIPT_DIR/bootstrap/main.sh" ]]; then
+  REPO_DIR="$SCRIPT_DIR"
+else
+  REPO_DIR="${DOTFILES_REPO_DIR:-$DEFAULT_REPO_DIR}"
+fi
+
+die() {
+  printf "error: %s\n" "$1" >&2
+  exit 1
+}
+
+info() {
+  printf "==> %s\n" "$1"
+}
+
+ensure_apple_silicon_macos() {
+  [[ "$(uname -s)" == "Darwin" ]] || die "This bootstrap only supports macOS."
+  [[ "$(uname -m)" == "arm64" ]] || die "This bootstrap only supports Apple Silicon Macs."
+}
+
+ensure_command_line_tools() {
+  if xcode-select -p >/dev/null 2>&1; then
+    return 0
+  fi
+
+  info "Apple Command Line Tools are required."
+  xcode-select --install || true
+  printf "Complete the Command Line Tools installer, then press Return to continue."
+  read -r _
+  xcode-select -p >/dev/null 2>&1 || die "Command Line Tools are still unavailable."
+}
+
+setup_homebrew() {
+  if ! command -v brew >/dev/null 2>&1; then
+    info "Installing Homebrew."
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+
+  [[ -x /opt/homebrew/bin/brew ]] || die "Homebrew was not found at /opt/homebrew/bin/brew."
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+}
+
+install_bootstrap_tools() {
+  info "Installing bootstrap tools from bootstrap/Brewfile.bootstrap."
+  brew bundle --file="$REPO_DIR/bootstrap/Brewfile.bootstrap"
+}
+
+ensure_repo_clone() {
+  if [[ -d "$REPO_DIR/.git" ]]; then
+    info "Updating existing dotfiles clone."
+    git -C "$REPO_DIR" fetch origin
+    git -C "$REPO_DIR" pull --ff-only
+    return 0
+  fi
+
+  if [[ -e "$REPO_DIR" ]]; then
+    die "$REPO_DIR exists but is not a git clone."
+  fi
+
+  mkdir -p "$(dirname "$REPO_DIR")"
+  info "Cloning dotfiles to $REPO_DIR."
+  git clone "$REPO_URL" "$REPO_DIR"
+}
+
+main() {
+  ensure_apple_silicon_macos
+  ensure_command_line_tools
+  setup_homebrew
+
+  ensure_repo_clone
+  install_bootstrap_tools
+
+  [[ -x "$REPO_DIR/bootstrap/main.sh" ]] || die "Bootstrap entrypoint missing: $REPO_DIR/bootstrap/main.sh"
+  exec "$REPO_DIR/bootstrap/main.sh"
+}
+
+main "$@"

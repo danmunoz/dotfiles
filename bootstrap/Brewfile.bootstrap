@@ -1,0 +1,4 @@
+brew "gum"
+brew "gh"
+brew "mas"
+brew "xcodes"
