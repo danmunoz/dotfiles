@@ -103,6 +103,56 @@ choose_one() {
   return 1
 }
 
+choose_multiple() {
+  local header="$1"
+  shift
+
+  printf "\n" >&2
+
+  if command -v gum >/dev/null 2>&1 && [ -t 0 ]; then
+    gum choose --no-limit \
+      --header "$header (Press Space/Tab to toggle, Enter to confirm)" \
+      --cursor-prefix "[ ] " \
+      --selected-prefix "[x] " \
+      --unselected-prefix "[ ] " \
+      --height 15 \
+      "$@"
+    return $?
+  fi
+
+  local option index=1
+  printf "%s%s%s\n" "$CLR_BOLD" "$header" "$CLR_RESET" >&2
+  printf "%sEnter numbers separated by spaces or commas (e.g. 1 3 5), or 'all'/'none':%s\n" "$CLR_DIM" "$CLR_RESET" >&2
+  for option in "$@"; do
+    printf "  %s%3d)%s %s\n" "$CLR_CYAN" "$index" "$CLR_RESET" "$option" >&2
+    index=$((index + 1))
+  done
+
+  printf "%sSelection:%s " "$CLR_DIM" "$CLR_RESET" >&2
+  local reply
+  read -r reply
+
+  if [[ "$reply" == "all" ]]; then
+    for option in "$@"; do
+      printf "%s\n" "$option"
+    done
+    return 0
+  elif [[ "$reply" == "none" || -z "$reply" ]]; then
+    return 0
+  fi
+
+  reply="${reply//,/ }"
+  local total=$#
+  local -a all_options=("$@")
+  local num
+  for num in $reply; do
+    if [[ "$num" =~ ^[0-9]+$ ]] && (( num >= 1 && num <= total )); then
+      printf "%s\n" "${all_options[$((num - 1))]}"
+    fi
+  done
+  return 0
+}
+
 run_step() {
   local title="$1"
   shift

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-source ./Scripts/Utilities/print-color
 
 DESTDIR="$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"
 mkdir -p "$DESTDIR"

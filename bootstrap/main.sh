@@ -78,7 +78,7 @@ main() {
   ensure_sudo
   setup_homebrew
 
-  environment_label="$(choose_one "Choose environment" "Personal" "Work")" || die "No environment selected."
+  environment_label="$(choose_one "Choose environment" "Personal" "Work" "Custom")" || die "No environment selected."
   case "$environment_label" in
     Personal)
       brewfile="$REPO_ROOT/Brewfile"
@@ -87,6 +87,11 @@ main() {
     Work)
       brewfile="$REPO_ROOT/work/Brewfile-work"
       dock_plist="$REPO_ROOT/work/com.apple.dock.plist"
+      ;;
+    Custom)
+      setup_custom_brewfile "$REPO_ROOT" || die "Custom package configuration was aborted."
+      brewfile="$CUSTOM_BREWFILE"
+      dock_plist=""
       ;;
     *)
       die "Unknown environment: $environment_label"
@@ -99,17 +104,13 @@ main() {
     die "Dotfile linking was skipped by user."
   fi
 
-  if confirm "Install Homebrew packages for $environment_label?"; then
-    install_environment_bundle "$brewfile"
-  fi
+  install_packages_for_environment "$environment_label" "$brewfile"
 
   install_oh_my_zsh_if_needed
   configure_xcode
   install_xcode_themes_if_requested "$REPO_ROOT"
 
-  if confirm "Restore $environment_label Dock layout? This overwrites the current Dock."; then
-    restore_dock "$dock_plist"
-  fi
+  restore_dock_for_environment "$environment_label" "$dock_plist" "$REPO_ROOT"
 
   install_rosetta_if_requested
   run_macos_prefs_if_requested

@@ -32,10 +32,10 @@ The `install` seed script:
 
 The terminal UI:
 
-- asks for `Personal` or `Work`
+- asks for `Personal`, `Work`, or `Custom`
 - creates a real `~/.dotfiles` directory for mixed managed and local files
 - symlinks managed dotfiles directly into your home directory
-- installs the selected Homebrew bundle
+- installs the selected Homebrew bundle (or interactively selected packages for Custom)
 - installs Oh My Zsh only if missing
 - installs or selects Xcode through `xcodes`
 - optionally installs Xcode themes
@@ -115,7 +115,6 @@ Local-only files are intentionally not managed. Use these examples as references
 ├── Scripts/
 │   ├── dotfiles/
 │   ├── Prefs/
-│   ├── Utilities/
 │   └── XcodeThemes/
 ├── dock/
 ├── work/
@@ -138,6 +137,12 @@ Work setup uses:
 - `work/com.apple.dock.plist`
 
 The work setup installs Microsoft Outlook and Microsoft Teams because the work Dock expects them.
+
+Custom setup:
+
+- presents an interactive checklist of all packages across Personal and Work (formulae, casks, App Store apps, and VS Code extensions)
+- generates a local, untracked bundle at `~/.dotfiles/Brewfile.custom`
+- allows choosing Personal, Work, or skipping Dock layout restoration
 
 ## Xcode
 
@@ -162,7 +167,6 @@ bash -n install \
   bootstrap/lib/*.sh \
   Scripts/Prefs/setup-macos-prefs \
   Scripts/XcodeThemes/install-xcode-themes \
-  Scripts/Utilities/print-color \
   Scripts/dotfiles/scripts/reset-android-emulator
 ```
 
