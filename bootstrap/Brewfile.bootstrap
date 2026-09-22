@@ -1,3 +1,4 @@
+brew "aria2"
 brew "gum"
 brew "gh"
 brew "mas"
