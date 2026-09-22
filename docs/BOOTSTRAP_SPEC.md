@@ -59,22 +59,23 @@ The system uses:
 1. User runs the one-line `install` command.
 2. `install` verifies macOS and Apple Silicon.
 3. `install` checks for Command Line Tools and starts `xcode-select --install` if needed.
-4. `install` installs Homebrew if missing.
-5. `install` clones or updates this public repo to `~/Repos/dotfiles` by default.
-6. `install` installs bootstrap dependencies from `bootstrap/Brewfile.bootstrap`.
-7. `install` launches `bootstrap/main.sh` from the local clone.
-8. The TUI asks for Personal or Work.
-9. The TUI ensures `~/.dotfiles/` and `~/.dotfiles/scripts/` are real directories.
-10. The TUI symlinks managed files from `Scripts/dotfiles/` into `$HOME`.
-11. The TUI installs the selected Homebrew bundle.
-12. The TUI installs Oh My Zsh only if missing. It must never delete an existing `~/.oh-my-zsh`.
-13. The TUI installs/configures Xcode through `xcodes` or selects an existing Xcode.
-14. The TUI optionally installs Xcode themes.
-15. The TUI optionally restores the environment-specific Dock plist.
-16. The TUI optionally installs Rosetta if not already installed.
-17. The TUI optionally runs baseline macOS preferences.
-18. The TUI optionally runs a local `~/.dotfiles/run-once`.
-19. The TUI optionally authenticates GitHub and configures the clone for pushing.
+4. `install` clones or updates this public repo to `~/Repos/dotfiles` by default.
+5. `install` prompts for and validates sudo access before launching Homebrew's non-interactive installer.
+6. `install` installs Homebrew if missing.
+7. `install` installs bootstrap dependencies from `bootstrap/Brewfile.bootstrap`.
+8. `install` launches `bootstrap/main.sh` from the local clone.
+9. The TUI asks for Personal or Work.
+10. The TUI ensures `~/.dotfiles/` and `~/.dotfiles/scripts/` are real directories.
+11. The TUI symlinks managed files from `Scripts/dotfiles/` into `$HOME`.
+12. The TUI installs the selected Homebrew bundle.
+13. The TUI installs Oh My Zsh only if missing. It must never delete an existing `~/.oh-my-zsh`.
+14. The TUI installs/configures Xcode through `xcodes` or selects an existing Xcode.
+15. The TUI optionally installs Xcode themes.
+16. The TUI optionally restores the environment-specific Dock plist.
+17. The TUI optionally installs Rosetta if not already installed.
+18. The TUI optionally runs baseline macOS preferences.
+19. The TUI optionally runs a local `~/.dotfiles/run-once`.
+20. The TUI optionally authenticates GitHub and configures the clone for pushing.
 
 ## Managed File Mapping
 

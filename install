@@ -53,6 +53,14 @@ install_bootstrap_tools() {
   brew bundle --file="$REPO_DIR/bootstrap/Brewfile.bootstrap"
 }
 
+load_bootstrap_checks() {
+  local checks_file="$REPO_DIR/bootstrap/lib/checks.sh"
+
+  [[ -r "$checks_file" ]] || die "Bootstrap checks missing: $checks_file"
+  # shellcheck source=bootstrap/lib/checks.sh
+  source "$checks_file"
+}
+
 ensure_repo_clone() {
   if [[ -d "$REPO_DIR/.git" ]]; then
     info "Updating existing dotfiles clone."
@@ -73,9 +81,13 @@ ensure_repo_clone() {
 main() {
   ensure_apple_silicon_macos
   ensure_command_line_tools
-  setup_homebrew
-
   ensure_repo_clone
+
+  # Homebrew's non-interactive installer cannot prompt for sudo. Authenticate
+  # before launching it, while this bootstrap can still ask the user directly.
+  load_bootstrap_checks
+  ensure_sudo_access
+  setup_homebrew
   install_bootstrap_tools
 
   [[ -x "$REPO_DIR/bootstrap/main.sh" ]] || die "Bootstrap entrypoint missing: $REPO_DIR/bootstrap/main.sh"

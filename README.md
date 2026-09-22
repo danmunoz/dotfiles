@@ -22,10 +22,11 @@ The `install` seed script:
 
 - verifies macOS on Apple Silicon
 - installs Apple Command Line Tools if missing
-- installs Homebrew if missing
 - clones this repo to `~/Repos/dotfiles` by default on a fresh machine
 - reuses the current local clone when run from inside the repo
 - otherwise updates the existing clone before launching the interactive setup flow
+- requests sudo access before launching Homebrew's non-interactive installer
+- installs Homebrew if missing
 - installs bootstrap tools from `bootstrap/Brewfile.bootstrap`
 - launches the repo-local terminal UI at `bootstrap/main.sh`
 

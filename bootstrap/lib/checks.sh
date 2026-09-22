@@ -18,13 +18,20 @@ ensure_command_line_tools() {
   xcode-select -p >/dev/null 2>&1 || die "Command Line Tools are still unavailable."
 }
 
-ensure_sudo() {
-  info "Requesting sudo once for system setup steps."
+ensure_sudo_access() {
+  info "Requesting sudo access for system setup steps."
   sudo -v
+}
 
+keep_sudo_alive() {
   while true; do
     sudo -n true
     sleep 60
     kill -0 "$$" || exit
   done 2>/dev/null &
+}
+
+ensure_sudo() {
+  ensure_sudo_access
+  keep_sudo_alive
 }
