@@ -81,10 +81,17 @@ ensure_command_line_tools() {
 }
 
 setup_homebrew() {
-  if ! command -v brew >/dev/null 2>&1; then
-    info "Installing Homebrew."
-    run /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
+
+  if command -v brew >/dev/null 2>&1; then
+    info "Homebrew is already installed."
+    return 0
+  fi
+
+  info "Installing Homebrew (unattended)."
+  run env NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   if [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
