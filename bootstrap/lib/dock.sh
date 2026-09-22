@@ -5,6 +5,6 @@ restore_dock() {
 
   [[ -f "$plist" ]] || die "Dock plist not found: $plist"
   plutil -lint "$plist" >/dev/null
-  cp "$plist" "$HOME/Library/Preferences/com.apple.dock.plist"
-  killall Dock >/dev/null 2>&1 || true
+  run cp "$plist" "$HOME/Library/Preferences/com.apple.dock.plist"
+  run killall Dock >/dev/null 2>&1 || true
 }

@@ -65,8 +65,25 @@ Common commands:
 cd ~/Repos/dotfiles                # open the repo
 git status                         # see tracked changes
 ./install                          # update the local clone if needed, then rerun setup
+./install --dry-run                # preview prompts and actions without modifying system
 code Scripts/dotfiles/aliases      # edit a managed dotfile directly
 ```
+
+## Dry-Run Mode
+
+You can test how the installer looks, verify prompts, and preview what changes would be made without touching your system:
+
+```bash
+./install --dry-run
+# or
+./install -n
+# or via environment variable
+DRY_RUN=1 ./install
+```
+
+In dry-run mode:
+- Interactive prompts (environment selection, symlink confirmation, Xcode choice, Dock restoration) still appear.
+- Mutating commands (`ln -s`, `rm`, `brew bundle`, `defaults write`, `sudo`, `killall`, `xcodes`, `git pull`) are safely skipped, allowing you to test the installer's look and flow without modifying your system.
 
 Managed files:
 

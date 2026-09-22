@@ -26,16 +26,25 @@ die() {
   exit 1
 }
 
+is_dry_run() {
+  [[ "${DRY_RUN:-0}" == "1" ]]
+}
+
+run() {
+  is_dry_run && return 0
+  "$@"
+}
+
 confirm() {
   local prompt="$1"
 
-  if command -v gum >/dev/null 2>&1; then
+  if command -v gum >/dev/null 2>&1 && [ -t 0 ]; then
     gum confirm "$prompt"
     return $?
   fi
 
   local reply
-  printf "%s [y/N] " "$prompt"
+  printf "%s [y/N] " "$prompt" >&2
   read -r reply
   [[ "$reply" =~ ^[Yy]$ ]]
 }
@@ -44,23 +53,23 @@ choose_one() {
   local header="$1"
   shift
 
-  if command -v gum >/dev/null 2>&1; then
+  if command -v gum >/dev/null 2>&1 && [ -t 0 ]; then
     gum choose --header "$header" "$@"
     return $?
   fi
 
   local option index=1 reply
-  printf "%s\n" "$header"
+  printf "%s\n" "$header" >&2
   for option in "$@"; do
-    printf "%d. %s\n" "$index" "$option"
+    printf "%d. %s\n" "$index" "$option" >&2
     index=$((index + 1))
   done
-  printf "Selection: "
+  printf "Selection: " >&2
   read -r reply
 
   index=1
   for option in "$@"; do
-    if [[ "$reply" == "$index" ]]; then
+    if [[ "$reply" == "$index" || "$reply" == "$option" ]]; then
       printf "%s\n" "$option"
       return 0
     fi

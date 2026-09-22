@@ -11,10 +11,10 @@ ensure_real_directory() {
     if ! confirm "Replace $dir with a real directory for mixed managed and local dotfiles?"; then
       die "Cannot continue without a real directory at $dir."
     fi
-    rm -rf "$dir"
+    run rm -rf "$dir"
   fi
 
-  mkdir -p "$dir"
+  run mkdir -p "$dir"
 }
 
 link_managed_file() {
@@ -24,7 +24,7 @@ link_managed_file() {
 
   [[ -e "$source" ]] || die "Managed source file not found: $source"
   parent_dir="$(dirname "$target")"
-  mkdir -p "$parent_dir"
+  run mkdir -p "$parent_dir"
 
   if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$source" ]]; then
     return 0
@@ -35,10 +35,10 @@ link_managed_file() {
       warn "Keeping existing $target."
       return 0
     fi
-    rm -rf "$target"
+    run rm -rf "$target"
   fi
 
-  ln -s "$source" "$target"
+  run ln -s "$source" "$target"
 }
 
 link_dotfiles() {
@@ -70,9 +70,9 @@ run_private_commands_if_present() {
   local script="$HOME/.dotfiles/run-once"
 
   [[ -f "$script" ]] || return 0
-  [[ -x "$script" ]] || chmod u+x "$script"
 
   if confirm "Run local one-time setup from $script?"; then
-    "$script"
+    [[ -x "$script" ]] || run chmod u+x "$script"
+    run "$script"
   fi
 }

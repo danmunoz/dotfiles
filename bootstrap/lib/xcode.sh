@@ -2,6 +2,7 @@
 
 select_xcode_app() {
   local app_path="$1"
+  is_dry_run && return 0
   [[ -d "$app_path/Contents/Developer" ]] || die "Xcode developer directory not found in $app_path."
 
   sudo xcode-select -s "$app_path/Contents/Developer"
@@ -26,6 +27,7 @@ configure_xcode() {
       select_xcode_app "/Applications/Xcode.app"
       ;;
     "Install latest Xcode with xcodes")
+      is_dry_run && return 0
       command -v xcodes >/dev/null 2>&1 || die "xcodes is not installed."
       xcodes install --latest
       app_path="$(latest_xcode_app)"
@@ -43,6 +45,6 @@ install_xcode_themes_if_requested() {
 
   [[ -x "$repo_root/Scripts/XcodeThemes/install-xcode-themes" ]] || return 0
   if confirm "Install Xcode themes?"; then
-    "$repo_root/Scripts/XcodeThemes/install-xcode-themes"
+    run "$repo_root/Scripts/XcodeThemes/install-xcode-themes"
   fi
 }

@@ -10,6 +10,8 @@ ensure_command_line_tools() {
     return 0
   fi
 
+  [[ "${DRY_RUN:-0}" == "1" ]] && return 0
+
   warn "Apple Command Line Tools are not installed."
   xcode-select --install || true
   printf "Complete the Command Line Tools installer, then press Return to continue."
@@ -19,11 +21,13 @@ ensure_command_line_tools() {
 }
 
 ensure_sudo_access() {
+  [[ "${DRY_RUN:-0}" == "1" ]] && return 0
   info "Requesting sudo access for system setup steps."
   sudo -v
 }
 
 keep_sudo_alive() {
+  [[ "${DRY_RUN:-0}" == "1" ]] && return 0
   while true; do
     sudo -n true
     sleep 60
@@ -32,6 +36,7 @@ keep_sudo_alive() {
 }
 
 ensure_sudo() {
+  [[ "${DRY_RUN:-0}" == "1" ]] && return 0
   ensure_sudo_access
   keep_sudo_alive
 }

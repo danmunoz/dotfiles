@@ -108,6 +108,7 @@ Examples live in:
 - The setup must be safe to rerun.
 - The setup must not overwrite local-only files like `~/.dotfiles/extra` or `~/.dotfiles/run-once`.
 - The setup must keep Homebrew rolling-latest behavior.
+- Dry-run mode (`--dry-run`, `-n`, or `DRY_RUN=1`) must simulate all changes without modifying the filesystem, packages, or macOS preferences.
 
 ## Validation Checklist
 
@@ -116,3 +117,4 @@ Examples live in:
 - `ls -l ~/.zshrc ~/.zprofile ~/.gitconfig ~/.gitignore` shows direct symlinks into the repo.
 - `ls -l ~/.dotfiles/aliases ~/.dotfiles/functions.zsh ~/.dotfiles/scripts/reset-android-emulator` shows direct symlinks into the repo.
 - Running `./install` from a cloned repo is idempotent and reuses the existing local clone.
+- Running `./install --dry-run` steps through the installer prompts and completes safely without changing files, dock, or preferences.

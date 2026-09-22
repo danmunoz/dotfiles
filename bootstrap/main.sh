@@ -13,6 +13,26 @@ source "$REPO_ROOT/bootstrap/lib/xcode.sh"
 source "$REPO_ROOT/bootstrap/lib/dock.sh"
 source "$REPO_ROOT/bootstrap/lib/dotfiles.sh"
 
+parse_args() {
+  for arg in "$@"; do
+    case "$arg" in
+      -n|--dry-run)
+        export DRY_RUN=1
+        ;;
+      -h|--help)
+        printf "Usage: %s [OPTIONS]\n\n" "$0"
+        printf "Options:\n"
+        printf "  -n, --dry-run    Simulate setup actions without modifying system or files\n"
+        printf "  -h, --help       Show this help message\n"
+        exit 0
+        ;;
+      *)
+        die "Unknown argument: $arg"
+        ;;
+    esac
+  done
+}
+
 install_rosetta_if_requested() {
   if pkgutil --pkg-info com.apple.pkg.RosettaUpdateAuto >/dev/null 2>&1; then
     info "Rosetta is already installed."
@@ -20,7 +40,7 @@ install_rosetta_if_requested() {
   fi
 
   if confirm "Install Rosetta 2? Choose yes only if you need Intel-only apps."; then
-    /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+    run /usr/sbin/softwareupdate --install-rosetta --agree-to-license
   fi
 }
 
@@ -29,7 +49,7 @@ run_macos_prefs_if_requested() {
   [[ -x "$script" ]] || return 0
 
   if confirm "Apply baseline macOS preferences?"; then
-    "$script"
+    run "$script"
   fi
 }
 
@@ -38,15 +58,21 @@ setup_github_push_if_requested() {
     return 0
   fi
 
-  gh auth status || gh auth login
-  git -C "$REPO_ROOT" remote set-url origin "$REPO_URL"
-  git -C "$REPO_ROOT" fetch origin
+  run gh auth status || run gh auth login
+  run git -C "$REPO_ROOT" remote set-url origin "$REPO_URL"
+  run git -C "$REPO_ROOT" fetch origin
 }
 
 main() {
+  parse_args "$@"
+
   local environment_label brewfile dock_plist
 
-  ui_header "danmunoz/dotfiles bootstrap"
+  if is_dry_run; then
+    ui_header "danmunoz/dotfiles bootstrap (dry run)"
+  else
+    ui_header "danmunoz/dotfiles bootstrap"
+  fi
   ensure_apple_silicon_macos
   ensure_command_line_tools
   ensure_sudo
@@ -90,7 +116,11 @@ main() {
   run_private_commands_if_present
   setup_github_push_if_requested
 
-  ui_header "Bootstrap complete"
+  if is_dry_run; then
+    ui_header "Bootstrap complete (dry run)"
+  else
+    ui_header "Bootstrap complete"
+  fi
   printf "Dotfiles repo:    %s\n" "$REPO_ROOT"
   printf "Managed source:   %s\n" "$DOTFILES_SOURCE_DIR"
   printf "Edit aliases:     %s\n" "$DOTFILES_SOURCE_DIR/aliases"

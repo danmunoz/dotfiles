@@ -21,6 +21,35 @@ info() {
   printf "==> %s\n" "$1"
 }
 
+is_dry_run() {
+  [[ "${DRY_RUN:-0}" == "1" ]]
+}
+
+run() {
+  is_dry_run && return 0
+  "$@"
+}
+
+parse_args() {
+  for arg in "$@"; do
+    case "$arg" in
+      -n|--dry-run)
+        export DRY_RUN=1
+        ;;
+      -h|--help)
+        printf "Usage: %s [OPTIONS]\n\n" "$0"
+        printf "Options:\n"
+        printf "  -n, --dry-run    Simulate setup actions without modifying system or files\n"
+        printf "  -h, --help       Show this help message\n"
+        exit 0
+        ;;
+      *)
+        die "Unknown argument: $arg"
+        ;;
+    esac
+  done
+}
+
 ensure_apple_silicon_macos() {
   [[ "$(uname -s)" == "Darwin" ]] || die "This bootstrap only supports macOS."
   [[ "$(uname -m)" == "arm64" ]] || die "This bootstrap only supports Apple Silicon Macs."
@@ -32,6 +61,7 @@ ensure_command_line_tools() {
   fi
 
   info "Apple Command Line Tools are required."
+  is_dry_run && return 0
   xcode-select --install || true
   printf "Complete the Command Line Tools installer, then press Return to continue."
   read -r _
@@ -41,16 +71,19 @@ ensure_command_line_tools() {
 setup_homebrew() {
   if ! command -v brew >/dev/null 2>&1; then
     info "Installing Homebrew."
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    run /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 
-  [[ -x /opt/homebrew/bin/brew ]] || die "Homebrew was not found at /opt/homebrew/bin/brew."
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif ! is_dry_run; then
+    die "Homebrew was not found at /opt/homebrew/bin/brew."
+  fi
 }
 
 install_bootstrap_tools() {
   info "Installing bootstrap tools from bootstrap/Brewfile.bootstrap."
-  brew bundle --file="$REPO_DIR/bootstrap/Brewfile.bootstrap"
+  run brew bundle --file="$REPO_DIR/bootstrap/Brewfile.bootstrap"
 }
 
 load_bootstrap_checks() {
@@ -64,8 +97,8 @@ load_bootstrap_checks() {
 ensure_repo_clone() {
   if [[ -d "$REPO_DIR/.git" ]]; then
     info "Updating existing dotfiles clone."
-    git -C "$REPO_DIR" fetch origin
-    git -C "$REPO_DIR" pull --ff-only
+    run git -C "$REPO_DIR" fetch origin
+    run git -C "$REPO_DIR" pull --ff-only
     return 0
   fi
 
@@ -73,12 +106,14 @@ ensure_repo_clone() {
     die "$REPO_DIR exists but is not a git clone."
   fi
 
-  mkdir -p "$(dirname "$REPO_DIR")"
   info "Cloning dotfiles to $REPO_DIR."
-  git clone "$REPO_URL" "$REPO_DIR"
+  run mkdir -p "$(dirname "$REPO_DIR")"
+  run git clone "$REPO_URL" "$REPO_DIR"
 }
 
 main() {
+  parse_args "$@"
+
   ensure_apple_silicon_macos
   ensure_command_line_tools
   ensure_repo_clone
@@ -91,7 +126,7 @@ main() {
   install_bootstrap_tools
 
   [[ -x "$REPO_DIR/bootstrap/main.sh" ]] || die "Bootstrap entrypoint missing: $REPO_DIR/bootstrap/main.sh"
-  exec "$REPO_DIR/bootstrap/main.sh"
+  exec "$REPO_DIR/bootstrap/main.sh" "$@"
 }
 
 main "$@"
