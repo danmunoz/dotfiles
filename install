@@ -12,13 +12,25 @@ else
   REPO_DIR="${DOTFILES_REPO_DIR:-$DEFAULT_REPO_DIR}"
 fi
 
+if [[ (-t 1 || -t 2) && -z "${NO_COLOR:-}" && "${TERM:-}" != "dumb" ]]; then
+  CLR_RESET=$'\033[0m'
+  CLR_BOLD=$'\033[1m'
+  CLR_BLUE=$'\033[1;34m'
+  CLR_RED=$'\033[1;31m'
+else
+  CLR_RESET=""
+  CLR_BOLD=""
+  CLR_BLUE=""
+  CLR_RED=""
+fi
+
 die() {
-  printf "error: %s\n" "$1" >&2
+  printf "%serror:%s %s\n" "$CLR_RED" "$CLR_RESET" "$1" >&2
   exit 1
 }
 
 info() {
-  printf "==> %s\n" "$1"
+  printf "%s==>%s %s%s%s\n" "$CLR_BLUE" "$CLR_RESET" "$CLR_BOLD" "$1" "$CLR_RESET"
 }
 
 is_dry_run() {

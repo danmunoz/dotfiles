@@ -121,11 +121,12 @@ main() {
   else
     ui_header "Bootstrap complete"
   fi
-  printf "Dotfiles repo:    %s\n" "$REPO_ROOT"
-  printf "Managed source:   %s\n" "$DOTFILES_SOURCE_DIR"
-  printf "Edit aliases:     %s\n" "$DOTFILES_SOURCE_DIR/aliases"
-  printf "Check links:      ls -l ~/.zshrc ~/.zprofile ~/.gitconfig ~/.gitignore ~/.dotfiles\n"
-  printf "Repo shell:       cd %s\n" "$REPO_ROOT"
+  printf "\n"
+  printf "%sDotfiles repo:%s    %s\n" "$CLR_DIM" "$CLR_RESET" "$REPO_ROOT"
+  printf "%sManaged source:%s   %s\n" "$CLR_DIM" "$CLR_RESET" "$DOTFILES_SOURCE_DIR"
+  printf "%sEdit aliases:%s     %s\n" "$CLR_DIM" "$CLR_RESET" "$DOTFILES_SOURCE_DIR/aliases"
+  printf "%sCheck links:%s      ls -l ~/.zshrc ~/.zprofile ~/.gitconfig ~/.gitignore ~/.dotfiles\n" "$CLR_DIM" "$CLR_RESET"
+  printf "%sRepo shell:%s       cd %s\n" "$CLR_DIM" "$CLR_RESET" "$REPO_ROOT"
 }
 
 main "$@"

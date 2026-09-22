@@ -1,5 +1,25 @@
 #!/usr/bin/env bash
 
+if [[ (-t 1 || -t 2) && -z "${NO_COLOR:-}" && "${TERM:-}" != "dumb" ]]; then
+  CLR_RESET=$'\033[0m'
+  CLR_BOLD=$'\033[1m'
+  CLR_DIM=$'\033[2m'
+  CLR_BLUE=$'\033[1;34m'
+  CLR_CYAN=$'\033[1;36m'
+  CLR_YELLOW=$'\033[1;33m'
+  CLR_RED=$'\033[1;31m'
+  CLR_MAGENTA=$'\033[1;35m'
+else
+  CLR_RESET=""
+  CLR_BOLD=""
+  CLR_DIM=""
+  CLR_BLUE=""
+  CLR_CYAN=""
+  CLR_YELLOW=""
+  CLR_RED=""
+  CLR_MAGENTA=""
+fi
+
 ui_header() {
   if command -v gum >/dev/null 2>&1; then
     gum style \
@@ -9,20 +29,20 @@ ui_header() {
       --foreground 212 \
       "$1"
   else
-    printf "\n%s\n\n" "$1"
+    printf "\n%s%s=== %s ===%s\n" "$CLR_BOLD" "$CLR_MAGENTA" "$1" "$CLR_RESET"
   fi
 }
 
 info() {
-  printf "==> %s\n" "$1"
+  printf "%s==>%s %s%s%s\n" "$CLR_BLUE" "$CLR_RESET" "$CLR_BOLD" "$1" "$CLR_RESET"
 }
 
 warn() {
-  printf "warning: %s\n" "$1" >&2
+  printf "%swarning:%s %s\n" "$CLR_YELLOW" "$CLR_RESET" "$1" >&2
 }
 
 die() {
-  printf "error: %s\n" "$1" >&2
+  printf "%serror:%s %s\n" "$CLR_RED" "$CLR_RESET" "$1" >&2
   exit 1
 }
 
@@ -38,13 +58,15 @@ run() {
 confirm() {
   local prompt="$1"
 
+  printf "\n" >&2
+
   if command -v gum >/dev/null 2>&1 && [ -t 0 ]; then
     gum confirm "$prompt"
     return $?
   fi
 
   local reply
-  printf "%s [y/N] " "$prompt" >&2
+  printf "%s?%s %s%s%s %s[y/N]%s " "$CLR_CYAN" "$CLR_RESET" "$CLR_BOLD" "$prompt" "$CLR_RESET" "$CLR_DIM" "$CLR_RESET" >&2
   read -r reply
   [[ "$reply" =~ ^[Yy]$ ]]
 }
@@ -53,18 +75,20 @@ choose_one() {
   local header="$1"
   shift
 
+  printf "\n" >&2
+
   if command -v gum >/dev/null 2>&1 && [ -t 0 ]; then
     gum choose --header "$header" "$@"
     return $?
   fi
 
   local option index=1 reply
-  printf "%s\n" "$header" >&2
+  printf "%s%s%s\n" "$CLR_BOLD" "$header" "$CLR_RESET" >&2
   for option in "$@"; do
-    printf "%d. %s\n" "$index" "$option" >&2
+    printf "  %s%d)%s %s\n" "$CLR_CYAN" "$index" "$CLR_RESET" "$option" >&2
     index=$((index + 1))
   done
-  printf "Selection: " >&2
+  printf "%sSelection:%s " "$CLR_DIM" "$CLR_RESET" >&2
   read -r reply
 
   index=1
