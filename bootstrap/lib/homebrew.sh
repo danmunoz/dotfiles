@@ -15,7 +15,12 @@ setup_homebrew() {
 
 install_bootstrap_bundle() {
   local repo_root="$1"
-  run brew bundle --file="$repo_root/bootstrap/Brewfile.bootstrap"
+  if ! command -v gum >/dev/null 2>&1 && command -v brew >/dev/null 2>&1; then
+    info "Installing bootstrap tools from bootstrap/Brewfile.bootstrap."
+    brew bundle --file="$repo_root/bootstrap/Brewfile.bootstrap"
+  else
+    run brew bundle --file="$repo_root/bootstrap/Brewfile.bootstrap"
+  fi
 }
 
 install_environment_bundle() {

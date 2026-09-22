@@ -68,6 +68,10 @@ main() {
 
   local environment_label brewfile dock_plist
 
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+
   if is_dry_run; then
     ui_header "danmunoz/dotfiles bootstrap (dry run)"
   else
@@ -77,6 +81,7 @@ main() {
   ensure_command_line_tools
   ensure_sudo
   setup_homebrew
+  install_bootstrap_bundle "$REPO_ROOT"
 
   environment_label="$(choose_one "Choose environment" "Personal" "Work" "Custom")" || die "No environment selected."
   case "$environment_label" in

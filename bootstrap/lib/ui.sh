@@ -103,6 +103,126 @@ choose_one() {
   return 1
 }
 
+choose_multiple_tui() {
+  local header="$1"
+  shift
+  local -a items=("$@")
+  local total=${#items[@]}
+  (( total == 0 )) && return 0
+
+  local -a selected=()
+  local i
+  for (( i=0; i<total; i++ )); do
+    selected+=(0)
+  done
+
+  local cursor=0
+  local offset=0
+  local window_size=15
+  (( total < window_size )) && window_size=$total
+
+  local old_stty
+  old_stty="$(stty -g 2>/dev/null || true)"
+  stty -echo -icanon min 1 time 0 2>/dev/null || true
+  printf "\033[?25l" >&2
+
+  local lines_drawn=$(( window_size + 4 ))
+
+  while true; do
+    local end=$(( offset + window_size ))
+    (( end > total )) && end=$total
+
+    printf "%s%s%s %s(↑/↓/j/k: navigate, Space/x: toggle, a: all, Enter: confirm, q: cancel)%s\r\n" \
+      "$CLR_BOLD" "$header" "$CLR_RESET" "$CLR_DIM" "$CLR_RESET" >&2
+
+    if (( offset > 0 )); then
+      printf "  %s↑ (%d more above)%s\r\n" "$CLR_DIM" "$offset" "$CLR_RESET" >&2
+    else
+      printf "  %s────────────────────────────────────────%s\r\n" "$CLR_DIM" "$CLR_RESET" >&2
+    fi
+
+    for (( i=offset; i<end; i++ )); do
+      local cur="  "
+      [[ $i -eq $cursor ]] && cur="${CLR_CYAN}>${CLR_RESET} "
+      local box="[ ]"
+      [[ ${selected[$i]} -eq 1 ]] && box="${CLR_BOLD}[x]${CLR_RESET}"
+      printf "%s%s %s\r\n" "$cur" "$box" "${items[$i]}" >&2
+    done
+
+    local below=$(( total - end ))
+    if (( below > 0 )); then
+      printf "  %s↓ (%d more below)%s\r\n" "$CLR_DIM" "$below" "$CLR_RESET" >&2
+    else
+      printf "  %s────────────────────────────────────────%s\r\n" "$CLR_DIM" "$CLR_RESET" >&2
+    fi
+
+    local count=0
+    for (( i=0; i<total; i++ )); do
+      (( ${selected[$i]} == 1 )) && count=$(( count + 1 ))
+    done
+    printf "  %s[%d of %d selected]%s\r\n" "$CLR_BOLD" "$count" "$total" "$CLR_RESET" >&2
+
+    local key="" rest=""
+    IFS= read -rsn1 key || break
+    if [[ "$key" == $'\x1b' ]]; then
+      read -rsn2 rest || true
+      key+="$rest"
+    fi
+
+    case "$key" in
+      $'\x1b[A'|k|K)
+        if (( cursor > 0 )); then
+          cursor=$(( cursor - 1 ))
+          (( cursor < offset )) && offset=$cursor
+        fi
+        ;;
+      $'\x1b[B'|j|J)
+        if (( cursor < total - 1 )); then
+          cursor=$(( cursor + 1 ))
+          (( cursor >= offset + window_size )) && offset=$(( cursor - window_size + 1 ))
+        fi
+        ;;
+      " "|x|X)
+        selected[$cursor]=$(( 1 - selected[$cursor] ))
+        ;;
+      a|A)
+        local all_sel=1
+        for (( i=0; i<total; i++ )); do
+          if (( ${selected[$i]} == 0 )); then
+            all_sel=0
+            break
+          fi
+        done
+        for (( i=0; i<total; i++ )); do
+          selected[$i]=$(( 1 - all_sel ))
+        done
+        ;;
+      "")
+        printf "\033[%dA\033[J" "$lines_drawn" >&2
+        break
+        ;;
+      q|Q)
+        printf "\033[%dA\033[J" "$lines_drawn" >&2
+        [[ -n "$old_stty" ]] && stty "$old_stty" 2>/dev/null || true
+        printf "\033[?25h" >&2
+        return 1
+        ;;
+    esac
+
+    printf "\033[%dA\033[J" "$lines_drawn" >&2
+  done
+
+  [[ -n "$old_stty" ]] && stty "$old_stty" 2>/dev/null || true
+  printf "\033[?25h" >&2
+
+  for (( i=0; i<total; i++ )); do
+    if (( ${selected[$i]} == 1 )); then
+      printf "%s\n" "${items[$i]}"
+    fi
+  done
+  return 0
+}
+
 choose_multiple() {
   local header="$1"
   shift
@@ -111,26 +231,24 @@ choose_multiple() {
 
   if command -v gum >/dev/null 2>&1 && [ -t 0 ]; then
     gum choose --no-limit \
-      --header "$header (Press Space/Tab to toggle, Enter to confirm)" \
-      --cursor-prefix "[ ] " \
-      --selected-prefix "[x] " \
-      --unselected-prefix "[ ] " \
+      --header "$header (Space/x to toggle, Enter to confirm)" \
+      --cursor="> " \
+      --cursor-prefix="[ ] " \
+      --selected-prefix="[x] " \
+      --unselected-prefix="[ ] " \
       --height 15 \
       "$@"
     return $?
   fi
 
-  local option index=1
-  printf "%s%s%s\n" "$CLR_BOLD" "$header" "$CLR_RESET" >&2
-  printf "%sEnter numbers separated by spaces or commas (e.g. 1 3 5), or 'all'/'none':%s\n" "$CLR_DIM" "$CLR_RESET" >&2
-  for option in "$@"; do
-    printf "  %s%3d)%s %s\n" "$CLR_CYAN" "$index" "$CLR_RESET" "$option" >&2
-    index=$((index + 1))
-  done
+  if [ -t 0 ]; then
+    choose_multiple_tui "$header" "$@"
+    return $?
+  fi
 
-  printf "%sSelection:%s " "$CLR_DIM" "$CLR_RESET" >&2
+  local option
   local reply
-  read -r reply
+  read -r reply || return 1
 
   if [[ "$reply" == "all" ]]; then
     for option in "$@"; do

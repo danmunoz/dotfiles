@@ -95,7 +95,11 @@ setup_homebrew() {
 
 install_bootstrap_tools() {
   info "Installing bootstrap tools from bootstrap/Brewfile.bootstrap."
-  run brew bundle --file="$REPO_DIR/bootstrap/Brewfile.bootstrap"
+  if ! command -v gum >/dev/null 2>&1 && command -v brew >/dev/null 2>&1; then
+    brew bundle --file="$REPO_DIR/bootstrap/Brewfile.bootstrap"
+  else
+    run brew bundle --file="$REPO_DIR/bootstrap/Brewfile.bootstrap"
+  fi
 }
 
 load_bootstrap_checks() {
